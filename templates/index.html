@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSV Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200 p-4">
+  <main class="w-full max-w-lg bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl p-8 space-y-6 border border-white/30">
+    <h1 class="text-3xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">📊 CSV Dashboard</h1>
+    <p class="text-gray-600 text-center">Choose whether you want to <b>Visualize</b> or <b>Predict</b> your CSV data.</p>
+
+    <!-- Upload for Visualization -->
+    <form action='/visualize_dashboard'>
+     
+      <button type="submit" id="uploadButtonVisualize" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium py-3 px-4 rounded-lg hover:shadow-lg hover:from-blue-700 hover:to-purple-700 transition">Upload for Visualization</button>
+    </form>
+
+    <!-- Upload for Prediction -->
+    <form action='/prediction_dashboard'>
+      <button type="submit" id="uploadButtonPredict" class="w-full bg-gradient-to-r from-green-600 to-teal-500 text-white font-medium py-3 px-4 rounded-lg hover:shadow-lg hover:from-green-700 hover:to-teal-600 transition">Upload for Prediction</button>
+    </form>
+
+    <!-- Tips -->
+    <details class="bg-gray-50 rounded-lg p-4 text-gray-600">
+      <summary class="font-semibold text-gray-800 cursor-pointer">💡 Data Tips</summary>
+      <p class="mt-2 text-sm">
+        • Use UTF-8 encoded CSV files.<br>
+        • Make sure your CSV has headers.<br>
+        • Visualization may take longer for large datasets.<br>
+        • Predictions work best with clean numeric data.
+      </p>
+    </details>
+  </main>
+
+  <script>
+    function setupFileInput(fileInputId, wrapperId) {
+      const fileInput = document.getElementById(fileInputId);
+      const wrapper = document.getElementById(wrapperId);
+      const labelText = wrapper.querySelector('.font-semibold');
+      const subText = wrapper.querySelector('.text-sm');
+
+      // Change event
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+          labelText.textContent = fileInput.files[0].name;
+          subText.textContent = `Size: ${(fileInput.files[0].size / 1024).toFixed(2)} KB`;
+          wrapper.classList.add('border-green-400', 'bg-green-50');
+        } else {
+          labelText.textContent = 'Choose a CSV file';
+          subText.textContent = 'or drag and drop here';
+          wrapper.classList.remove('border-green-400', 'bg-green-50');
+        }
+      });
+
+      // Drag events
+      ['dragenter', 'dragover'].forEach(evt => {
+        wrapper.addEventListener(evt, e => {
+          e.preventDefault();
+          wrapper.classList.add('border-blue-400', 'bg-blue-50');
+        });
+      });
+      ['dragleave', 'drop'].forEach(evt => {
+        wrapper.addEventListener(evt, e => {
+          e.preventDefault();
+          wrapper.classList.remove('border-blue-400', 'bg-blue-50');
+        });
+      });
+
+      wrapper.addEventListener('drop', e => {
+        e.preventDefault();
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          fileInput.files = files;
+          fileInput.dispatchEvent(new Event('change'));
+        }
+      });
+    }
+
+    // Setup both upload forms
+    setupFileInput('fileInputVisualize', 'fileInputWrapperVisualize');
+    setupFileInput('fileInputPredict', 'fileInputWrapperPredict');
+
+    // Add loading animation
+    function setupForm(formId, buttonId) {
+      const form = document.getElementById(formId);
+      const button = document.getElementById(buttonId);
+      form.addEventListener('submit', () => {
+        button.disabled = true;
+        button.innerHTML = '⏳ Processing...';
+        button.classList.add('opacity-70');
+      });
+    }
+
+    setupForm('uploadFormVisualize', 'uploadButtonVisualize');
+    setupForm('uploadFormPredict', 'uploadButtonPredict');
+  </script>
+</body>
+</html>

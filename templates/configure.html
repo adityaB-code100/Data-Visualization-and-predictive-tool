@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configure Chart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary-color: #7209b7;
+      --accent-color: #4cc9f0;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --light-bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      animation: gradientShift 15s ease infinite;
+      background-size: 200% 200%;
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    main {
+      box-shadow: 
+        0 10px 25px -5px rgba(0, 0, 0, 0.1), 
+        0 10px 10px -5px rgba(0, 0, 0, 0.04),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.92);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: cardEntrance 0.8s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    main::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.7s ease;
+    }
+    
+    main:hover::before {
+      left: 100%;
+    }
+    
+    @keyframes cardEntrance {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    
+    h1 {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      padding-bottom: 10px;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes titleGlow {
+      0% {
+        text-shadow: 0 0 5px rgba(67, 97, 238, 0.3);
+      }
+      100% {
+        text-shadow: 0 0 15px rgba(114, 9, 183, 0.4);
+      }
+    }
+    
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border-radius: 2px;
+      animation: linePulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes linePulse {
+      0%, 100% { width: 60px; }
+      50% { width: 80px; }
+    }
+    
+    /* Flash Messages */
+    .flash-message {
+      border-left: 4px solid var(--error-color);
+      animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .flash-message::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.05), transparent);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes slideIn {
+      0% {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    /* Suggestions Section */
+    .suggestions-section {
+      background: linear-gradient(135deg, #f0f4ff 0%, #e6f7ff 100%);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(67, 97, 238, 0.1);
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .suggestions-section h3 {
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .suggestions-section h3::before {
+      content: '💡';
+      font-size: 1.2rem;
+    }
+    
+    .suggestion-button {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      color: white;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(67, 97, 238, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .suggestion-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+    }
+    
+    .suggestion-button::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .suggestion-button:hover::after {
+      left: 100%;
+    }
+    
+    /* Form Elements */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      animation: formEntrance 0.8s ease-out 0.2s both;
+    }
+    
+    @keyframes formEntrance {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .form-label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 500;
+      color: var(--text-primary);
+      position: relative;
+    }
+    
+    .form-label::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .form-label:focus-within::after {
+      transform: scaleX(1);
+    }
+    
+    .form-select, .form-input {
+      margin-top: 0.5rem;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .form-select:focus, .form-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+    
+    .form-select option {
+      padding: 0.5rem;
+    }
+    
+    /* Submit Button */
+    .submit-button {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      color: white;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 4px 6px -1px rgba(67, 97, 238, 0.3);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    
+    .submit-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px -3px rgba(67, 97, 238, 0.5);
+    }
+    
+    .submit-button:active {
+      transform: translateY(0);
+    }
+    
+    .submit-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.7s ease;
+    }
+    
+    .submit-button:hover::before {
+      left: 100%;
+    }
+    
+    /* Chart Preview Section */
+    .chart-preview {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      animation: previewEntrance 0.8s ease-out;
+    }
+    
+    @keyframes previewEntrance {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .download-button {
+      background: linear-gradient(135deg, var(--success-color), #0d9488);
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      color: white;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .download-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+    }
+    
+    /* Back Link */
+    .back-link {
+      color: var(--primary-color);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      margin-top: 1.5rem;
+    }
+    
+    .back-link:hover {
+      color: var(--secondary-color);
+      transform: translateX(-5px);
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      main {
+        padding: 1.5rem;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 1.75rem;
+      }
+    }
+    
+    /* Loading Animation */
+    .loading {
+      position: relative;
+      pointer-events: none;
+    }
+    
+    .loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      margin: -10px 0 0 -10px;
+      border: 2px solid transparent;
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+  <main class="w-full max-w-5xl rounded-2xl p-8">
+    
+    <h1 class="text-3xl font-bold mb-6 text-center">📊 Configure Chart</h1>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="mb-4 space-y-2">
+          {% for message in messages %}
+            <li class="flash-message bg-red-50 text-red-700 px-4 py-2 rounded-lg text-sm">
+              {{ message }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+
+    <!-- Chart Config Form -->
+    <form action="" method="post" class="space-y-6" id="chartForm">
+      <div class="form-grid">
+
+        <!-- Chart Type -->
+        <label class="form-label">
+          Chart Type
+          <select name="chart" required class="form-select">
+            {% for value, label in chart_types %}
+              <option value="{{ value }}" {% if selected.chart==value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </label>
+
+<!-- X Axis -->
+<label class="form-label">
+  X Axis
+  <select name="x" id="x-axis" class="form-select">
+    <option value="">(none)</option>
+    {% for c in columns %}
+      <option value="{{ c }}" data-type="{{ kinds[c] }}">{{ c }} ({{ kinds[c] }})</option>
+    {% endfor %}
+  </select>
+</label>
+
+<!-- Y Axis -->
+<label class="form-label">
+  Y Axis
+  <select name="y" id="y-axis" class="form-select">
+    <option value="">(none)</option>
+    {% for c in columns %}
+      <option value="{{ c }}" data-type="{{ kinds[c] }}">{{ c }} ({{ kinds[c] }})</option>
+    {% endfor %}
+  </select>
+</label>
+
+
+   
+
+
+
+
+        <!-- Title -->
+        <label class="form-label">
+          Title
+          <input type="text" name="title" value="{{ selected.title or '' }}" placeholder="Chart title" class="form-input" />
+        </label>
+
+        
+      </div>
+
+      <button type="submit" class="submit-button" id="submitButton">
+        Update Chart
+      </button>
+    </form>
+
+    <!-- Chart Preview -->
+    {% if fig_html %}
+      <section class="chart-preview">
+        {{ fig_html | safe }}
+        <form action="{{ url_for('download_png', upload_id=upload_id) }}" method="post" class="mt-4">
+          <input type="hidden" name="chart" value="{{ selected.chart }}">
+          <input type="hidden" name="x" value="{{ selected.x or '' }}">
+          <input type="hidden" name="y" value="{{ selected.y or '' }}">
+          <input type="hidden" name="title" value="{{ selected.title or '' }}">
+          <button type="submit" class="download-button">
+            <i class="fas fa-download"></i> Download PNG
+          </button>
+        </form>
+      </section>
+    {% endif %}
+
+    <p class="text-center">
+      <a href="/" class="back-link">
+        <i class="fas fa-arrow-left"></i> Upload another file
+      </a>
+    </p>
+  </main>
+
+  <script>
+    // Form submission loading animation
+    document.getElementById('chartForm').addEventListener('submit', function(e) {
+      const button = document.getElementById('submitButton');
+      button.classList.add('loading');
+      button.innerHTML = 'Updating Chart...';
+    });
+    
+    // Add subtle animations for form elements
+    document.addEventListener('DOMContentLoaded', function() {
+      const formElements = document.querySelectorAll('.form-label');
+      
+      formElements.forEach((el, index) => {
+        el.style.animationDelay = `${index * 0.05}s`;
+      });
+    });
+  </script>
+ <script>
+  const chartTypeSelect = document.querySelector('select[name="chart"]');
+  const xAxisSelect = document.getElementById('x-axis');
+  const yAxisSelect = document.getElementById('y-axis');
+
+  // Keep all original options in memory
+  const xOptionsAll = Array.from(xAxisSelect.querySelectorAll('option'));
+  const yOptionsAll = Array.from(yAxisSelect.querySelectorAll('option'));
+
+  const rules = {
+    bar: { x: ['categorical'], y: ['numeric'] },
+    line: { x: ['datetime'], y: ['numeric'] },
+    scatter: { x: ['numeric'], y: ['numeric'] },
+    histogram: { x: ['numeric'], y: [] },
+    pie: { x: ['categorical'], y: ['numeric'] },
+    box: { x: ['categorical'], y: ['numeric'] },
+    area: { x: ['datetime'], y: ['numeric'] },
+    heatmap: { x: ['categorical'], y: ['categorical'] },
+    bubble: { x: ['numeric'], y: ['numeric'] },
+    treemap: { x: ['categorical'], y: ['numeric'] }
+  };
+
+  function reloadAxes(chartType) {
+    const rule = rules[chartType] || { x: [], y: [] };
+
+    // Clear current options
+    xAxisSelect.innerHTML = '';
+    yAxisSelect.innerHTML = '';
+
+    // Add (none) option
+    xAxisSelect.append(new Option('(none)', ''));
+    yAxisSelect.append(new Option('(none)', ''));
+
+    // Reload X options
+    xOptionsAll.forEach(opt => {
+      const type = opt.dataset.type;
+      if (!type || rule.x.includes(type)) {
+        xAxisSelect.append(opt.cloneNode(true));
+      }
+    });
+
+    // Reload Y options
+    yOptionsAll.forEach(opt => {
+      const type = opt.dataset.type;
+      if (!type || rule.y.includes(type)) {
+        yAxisSelect.append(opt.cloneNode(true));
+      }
+    });
+  }
+
+  // Trigger reload on chart type change
+  chartTypeSelect.addEventListener('change', (e) => {
+    reloadAxes(e.target.value);
+  });
+
+  // Reload once on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    reloadAxes(chartTypeSelect.value);
+  });
+</script>
+<script>
+  const chartForm = document.getElementById('chartForm');
+  const submitButton = document.getElementById('submitButton');
+
+  chartForm.addEventListener('submit', function(e) {
+    const xValue = xAxisSelect.value;
+    const yValue = yAxisSelect.value;
+
+    // Validation: X and Y cannot be the same
+    if (xValue && yValue && xValue === yValue) {
+      e.preventDefault(); // Stop form submission
+      alert('X Axis and Y Axis cannot be the same column.');
+      return false;
+    }
+
+    // Add loading animation
+    submitButton.classList.add('loading');
+    submitButton.innerHTML = 'Updating Chart...';
+  });
+</script>
+
+
+</body>
+</html>
+
+
