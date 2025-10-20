@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoX - Dark</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #0a0a0f;
+      color: #f1f1f1;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Gradient animation */
+    .gradient-text {
+      background: linear-gradient(90deg, #00f5a0, #00d9f5, #ff00f7);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientMove 5s ease infinite;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Glow effect */
+    .glow {
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+    }
+
+    /* Smooth fade-in animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeIn 1s forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Floating card animation */
+    .float {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center overflow-x-hidden">
+
+  <!-- Header -->
+  <header class="w-full flex justify-between items-center px-8 py-4 bg-[#11111a]/70 backdrop-blur-md fixed top-0 left-0 z-50 border-b border-gray-800">
+    <h1 class="text-2xl font-bold gradient-text">CryptoX</h1>
+    <nav class="space-x-6 hidden md:flex">
+      <a href="#" class="hover:text-cyan-400 transition">Home</a>
+      <a href="#" class="hover:text-cyan-400 transition">Markets</a>
+      <a href="#" class="hover:text-cyan-400 transition">Portfolio</a>
+      <a href="#" class="hover:text-cyan-400 transition">About</a>
+    </nav>
+    <button class="bg-cyan-500 px-5 py-2 rounded-full text-black font-semibold hover:bg-cyan-400 transition glow">Connect Wallet</button>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="flex flex-col items-center justify-center text-center px-6 mt-32 fade-in">
+    <h2 class="text-5xl md:text-6xl font-bold mb-6 gradient-text">Trade Crypto Effortlessly</h2>
+    <p class="text-gray-400 text-lg md:text-xl max-w-2xl mb-8">
+      The next-generation cryptocurrency platform built for speed, security, and simplicity.
+    </p>
+    <div class="flex gap-4">
+      <button class="bg-cyan-500 px-6 py-3 rounded-full font-semibold text-black hover:bg-cyan-400 transition glow">Get Started</button>
+      <button class="border border-cyan-500 px-6 py-3 rounded-full font-semibold text-cyan-400 hover:bg-cyan-500/20 transition">Learn More</button>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6 px-10 mt-20 fade-in">
+    <div class="bg-[#141420] p-6 rounded-2xl text-center float hover:scale-105 transition glow">
+      <h3 class="text-3xl font-bold text-cyan-400">120+</h3>
+      <p class="text-gray-400 mt-2">Cryptocurrencies</p>
+    </div>
+    <div class="bg-[#141420] p-6 rounded-2xl text-center float hover:scale-105 transition glow">
+      <h3 class="text-3xl font-bold text-cyan-400">50K+</h3>
+      <p class="text-gray-400 mt-2">Active Users</p>
+    </div>
+    <div class="bg-[#141420] p-6 rounded-2xl text-center float hover:scale-105 transition glow">
+      <h3 class="text-3xl font-bold text-cyan-400">$500M+</h3>
+      <p class="text-gray-400 mt-2">Daily Volume</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="w-full mt-24 py-6 text-center text-gray-500 border-t border-gray-800">
+    © 2025 CryptoX. All rights reserved.
+  </footer>
+
+  <!-- Scroll Animation Script -->
+  <script>
+    const elements = document.querySelectorAll('.fade-in');
+    window.addEventListener('scroll', () => {
+      elements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+          el.style.animationPlayState = 'running';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

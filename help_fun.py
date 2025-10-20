@@ -61,29 +61,57 @@ def infer_column_kinds(df: pd.DataFrame) -> Dict[str, str]:
 
 
 
+# def build_figure(
+# 	df: pd.DataFrame,
+# 	chart: str,
+# 	x: Optional[str],
+# 	y: Optional[str],
+# 	color: Optional[str],
+# 	agg: Optional[str],
+# 	title: str,
+# 	color_continuous_scale: Optional[str],
+# ) -> "px.Figure":
+# 	if chart == "line":
+# 		return px.line(df, x=x, y=y, color=color, title=title)
+# 	if chart == "bar":
+# 		return px.bar(df, x=x, y=y, color=color, title=title)
+# 	if chart == "scatter":
+# 		return px.scatter(df, x=x, y=y, color=color, title=title)
+# 	if chart == "histogram":
+# 		return px.histogram(df, x=x or y, color=color, title=title)
+# 	if chart == "box":
+# 		return px.box(df, x=x, y=y, color=color, title=title)
+# 	if chart == "pie":
+# 		if x and y:
+# 			dfg = df.groupby(x, dropna=False)[y].sum().reset_index()
+# 			return px.pie(dfg, names=x, values=y, title=title)
+# 		return px.pie(df, names=x or color, title=title)
+# 	raise ValueError("Unsupported chart type")
 def build_figure(
-	df: pd.DataFrame,
-	chart: str,
-	x: Optional[str],
-	y: Optional[str],
-	color: Optional[str],
-	agg: Optional[str],
-	title: str,
-	color_continuous_scale: Optional[str],
+    df: pd.DataFrame,
+    chart: str,
+    x: Optional[str],
+    y: Optional[str],
+    color: Optional[str],
+    agg: Optional[str],
+    title: str,
+    color_continuous_scale: Optional[str],
 ) -> "px.Figure":
-	if chart == "line":
-		return px.line(df, x=x, y=y, color=color, title=title)
-	if chart == "bar":
-		return px.bar(df, x=x, y=y, color=color, title=title)
-	if chart == "scatter":
-		return px.scatter(df, x=x, y=y, color=color, title=title)
-	if chart == "histogram":
-		return px.histogram(df, x=x or y, color=color, title=title)
-	if chart == "box":
-		return px.box(df, x=x, y=y, color=color, title=title)
-	if chart == "pie":
-		if x and y:
-			dfg = df.groupby(x, dropna=False)[y].sum().reset_index()
-			return px.pie(dfg, names=x, values=y, title=title)
-		return px.pie(df, names=x or color, title=title)
-	raise ValueError("Unsupported chart type")
+    chart_type = (chart or "").strip().lower()  # normalize input
+
+    if chart_type == "line":
+        return px.line(df, x=x, y=y, color=color, title=title)
+    if chart_type == "bar":
+        return px.bar(df, x=x, y=y, color=color, title=title)
+    if chart_type == "scatter":
+        return px.scatter(df, x=x, y=y, color=color, title=title)
+    if chart_type == "histogram":
+        return px.histogram(df, x=x or y, color=color, title=title)
+    if chart_type == "box":
+        return px.box(df, x=x, y=y, color=color, title=title)
+    if chart_type == "pie":
+        if x and y:
+            dfg = df.groupby(x, dropna=False)[y].sum().reset_index()
+            return px.pie(dfg, names=x, values=y, title=title)
+        return px.pie(df, names=x or color, title=title)
+    raise ValueError(f"Unsupported chart type: {chart}")

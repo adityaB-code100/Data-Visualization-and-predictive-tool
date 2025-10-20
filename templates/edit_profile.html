@@ -1,0 +1,9 @@
+<form method="POST">
+  <input name="name" value="{{ user.name }}" required>
+  <select name="work">
+    <option value="Student" {% if user.work == "Student" %}selected{% endif %}>Student</option>
+    <option value="Working" {% if user.work == "Working" %}selected{% endif %}>Working</option>
+  </select>
+  <button type="submit">Update Profile</button>
+</form>
+<a href="{{ url_for('logout') }}">Logout</a>

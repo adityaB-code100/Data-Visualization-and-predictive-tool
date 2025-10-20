@@ -505,8 +505,21 @@
             <i class="fas fa-download"></i> Download PNG
           </button>
         </form>
+
+
+          <form action="{{ url_for('save_chart', upload_id=upload_id) }}" method="post" class="mt-4">
+          <input type="hidden" name="chart" value="{{ selected.chart }}">
+          <input type="hidden" name="x" value="{{ selected.x or '' }}">
+          <input type="hidden" name="y" value="{{ selected.y or '' }}">
+          <input type="hidden" name="title" value="{{ selected.title or '' }}">
+          <button type="submit" class="download-button">
+            <i class="fas fa-download"></i> store to Download PNG
+          </button>
+        </form>
       </section>
     {% endif %}
+
+    
 
     <p class="text-center">
       <a href="/" class="back-link">

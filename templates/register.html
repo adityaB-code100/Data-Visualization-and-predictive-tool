@@ -1,0 +1,11 @@
+<form method="POST">
+  <input name="name" placeholder="Full Name" required>
+  <input name="email" type="email" placeholder="Email" required>
+  <input name="password" type="password" placeholder="Password" required>
+  <select name="work">
+    <option value="Student">Student</option>
+    <option value="Working">Working Person</option>
+  </select>
+  <button type="submit">Register</button>
+</form>
+<a href="{{ url_for('login') }}">Already have an account? Login</a>

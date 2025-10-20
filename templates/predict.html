@@ -95,24 +95,6 @@
     </div>
   </main>
 
-  <script>
-    // Show input form when a target column is selected
-    $('#targetColumn').on('change', function() {
-      const selected = $(this).val();
-      if (selected) {
-        $('#inputForm').removeClass('hidden');
-      } else {
-        $('#inputForm').addClass('hidden');
-      }
-    });
-
-    // Simulate prediction (replace with Flask API call)
-    $('#predictBtn').on('click', function() {
-      const target = $('#targetColumn').val();
-      if (!target) return alert('Select target column first!');
-      $('#result').removeClass('hidden');
-      $('#predictionOutput').text(`Prediction (${target}): ${Math.floor(Math.random() * 100)}`);
-    });
-  </script>
+ 
 </body>
 </html>
