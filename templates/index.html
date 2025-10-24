@@ -1,100 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CSV Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Intelligence Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200 p-4">
-  <main class="w-full max-w-lg bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl p-8 space-y-6 border border-white/30">
-    <h1 class="text-3xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">📊 CSV Dashboard</h1>
-    <p class="text-gray-600 text-center">Choose whether you want to <b>Visualize</b> or <b>Predict</b> your CSV data.</p>
 
-    <!-- Upload for Visualization -->
-    <form action='/visualize_dashboard'>
-     
-      <button type="submit" id="uploadButtonVisualize" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium py-3 px-4 rounded-lg hover:shadow-lg hover:from-blue-700 hover:to-purple-700 transition">Upload for Visualization</button>
+<body class="bg-gradient-to-br from-gray-900 via-gray-950 to-black text-gray-100 font-inter">
+
+  <!-- Header -->
+  <header class="text-center px-4 pt-12 sm:pt-16 lg:pt-24">
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+      📊 Data Intelligence Hub
+    </h1>
+    <p class="mt-4 text-gray-400 sm:text-lg lg:text-xl max-w-2xl mx-auto">
+      Upload your datasets and <b>visualize</b> insights or <b>predict</b> future trends effortlessly.
+    </p>
+  </header>
+
+  <!-- Upload Buttons -->
+  <section class="mt-12 px-4 flex flex-col sm:flex-row justify-center gap-6 max-w-3xl mx-auto">
+    <form id="uploadFormVisualize" action="/visualize_dashboard" class="flex-1">
+      <button
+        id="uploadButtonVisualize"
+        type="submit"
+        class="w-full py-4 rounded-xl font-semibold text-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg hover:shadow-cyan-500/30 transition-transform transform hover:-translate-y-1"
+      >
+        📈 Upload for Visualization
+      </button>
     </form>
-
-    <!-- Upload for Prediction -->
-    <form action='/prediction_dashboard'>
-      <button type="submit" id="uploadButtonPredict" class="w-full bg-gradient-to-r from-green-600 to-teal-500 text-white font-medium py-3 px-4 rounded-lg hover:shadow-lg hover:from-green-700 hover:to-teal-600 transition">Upload for Prediction</button>
+    <form id="uploadFormPredict" action="/prediction_dashboard" class="flex-1">
+      <button
+        id="uploadButtonPredict"
+        type="submit"
+        class="w-full py-4 rounded-xl font-semibold text-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white shadow-lg hover:shadow-green-500/30 transition-transform transform hover:-translate-y-1"
+      >
+        🤖 Upload for Prediction
+      </button>
     </form>
+  </section>
 
-    <!-- Tips -->
-    <details class="bg-gray-50 rounded-lg p-4 text-gray-600">
-      <summary class="font-semibold text-gray-800 cursor-pointer">💡 Data Tips</summary>
-      <p class="mt-2 text-sm">
+  <!-- Tips -->
+  <section class="mt-8 px-4 max-w-3xl mx-auto">
+    <details class="bg-gray-800/70 border border-gray-700 rounded-xl p-4 text-gray-300 transition-all hover:border-cyan-500/50">
+      <summary class="cursor-pointer font-semibold text-cyan-400">💡 Data Tips</summary>
+      <p class="mt-2 text-sm sm:text-base text-gray-400 leading-relaxed">
         • Use UTF-8 encoded CSV files.<br>
-        • Make sure your CSV has headers.<br>
+        • Ensure your CSV includes headers.<br>
         • Visualization may take longer for large datasets.<br>
         • Predictions work best with clean numeric data.
       </p>
     </details>
-  </main>
+  </section>
+
+  <!-- Features Section -->
+  <section class="mt-16 px-4 max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="bg-gray-800/70 p-6 rounded-xl flex flex-col items-center text-center hover:scale-105 transition-transform">
+      <div class="text-cyan-400 text-3xl mb-3">📂</div>
+      <h3 class="font-semibold text-xl mb-2">Easy Upload</h3>
+      <p class="text-gray-400 text-sm sm:text-base">Quickly upload CSV, Excel, or other common file formats.</p>
+    </div>
+
+    <div class="bg-gray-800/70 p-6 rounded-xl flex flex-col items-center text-center hover:scale-105 transition-transform">
+      <div class="text-purple-400 text-3xl mb-3">📊</div>
+      <h3 class="font-semibold text-xl mb-2">Interactive Visuals</h3>
+      <p class="text-gray-400 text-sm sm:text-base">Explore data with dynamic charts, graphs, and dashboards.</p>
+    </div>
+
+    <div class="bg-gray-800/70 p-6 rounded-xl flex flex-col items-center text-center hover:scale-105 transition-transform">
+      <div class="text-green-400 text-3xl mb-3">🤖</div>
+      <h3 class="font-semibold text-xl mb-2">Predictive Analytics</h3>
+      <p class="text-gray-400 text-sm sm:text-base">Forecast trends, sales, health metrics, or environmental changes using AI.</p>
+    </div>
+
+    <div class="bg-gray-800/70 p-6 rounded-xl flex flex-col items-center text-center hover:scale-105 transition-transform">
+      <div class="text-yellow-400 text-3xl mb-3">⚡</div>
+      <h3 class="font-semibold text-xl mb-2">Data-Driven Decisions</h3>
+      <p class="text-gray-400 text-sm sm:text-base">Transform raw data into actionable intelligence to stay ahead.</p>
+    </div>
+  </section>
 
   <script>
-    function setupFileInput(fileInputId, wrapperId) {
-      const fileInput = document.getElementById(fileInputId);
-      const wrapper = document.getElementById(wrapperId);
-      const labelText = wrapper.querySelector('.font-semibold');
-      const subText = wrapper.querySelector('.text-sm');
-
-      // Change event
-      fileInput.addEventListener('change', () => {
-        if (fileInput.files.length > 0) {
-          labelText.textContent = fileInput.files[0].name;
-          subText.textContent = `Size: ${(fileInput.files[0].size / 1024).toFixed(2)} KB`;
-          wrapper.classList.add('border-green-400', 'bg-green-50');
-        } else {
-          labelText.textContent = 'Choose a CSV file';
-          subText.textContent = 'or drag and drop here';
-          wrapper.classList.remove('border-green-400', 'bg-green-50');
-        }
-      });
-
-      // Drag events
-      ['dragenter', 'dragover'].forEach(evt => {
-        wrapper.addEventListener(evt, e => {
-          e.preventDefault();
-          wrapper.classList.add('border-blue-400', 'bg-blue-50');
-        });
-      });
-      ['dragleave', 'drop'].forEach(evt => {
-        wrapper.addEventListener(evt, e => {
-          e.preventDefault();
-          wrapper.classList.remove('border-blue-400', 'bg-blue-50');
-        });
-      });
-
-      wrapper.addEventListener('drop', e => {
-        e.preventDefault();
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-          fileInput.files = files;
-          fileInput.dispatchEvent(new Event('change'));
-        }
-      });
-    }
-
-    // Setup both upload forms
-    setupFileInput('fileInputVisualize', 'fileInputWrapperVisualize');
-    setupFileInput('fileInputPredict', 'fileInputWrapperPredict');
-
-    // Add loading animation
     function setupForm(formId, buttonId) {
       const form = document.getElementById(formId);
       const button = document.getElementById(buttonId);
-      form.addEventListener('submit', () => {
+      form.addEventListener("submit", () => {
         button.disabled = true;
-        button.innerHTML = '⏳ Processing...';
-        button.classList.add('opacity-70');
+        button.innerHTML = "⏳ Processing...";
+        button.classList.add("opacity-60");
       });
     }
-
-    setupForm('uploadFormVisualize', 'uploadButtonVisualize');
-    setupForm('uploadFormPredict', 'uploadButtonPredict');
+    setupForm("uploadFormVisualize", "uploadButtonVisualize");
+    setupForm("uploadFormPredict", "uploadButtonPredict");
   </script>
 </body>
 </html>

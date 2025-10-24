@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register | Data Visualization & Prediction</title>
+  <title>Reset Password | Data Visualization & Prediction</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://kit.fontawesome.com/a2e0e6c6e1.js" crossorigin="anonymous"></script>
   <style>
@@ -28,17 +28,10 @@
 </head>
 <body class="flex items-center justify-center min-h-screen px-4">
   <div class="bg-gray-900 bg-opacity-80 backdrop-blur-xl p-8 rounded-2xl shadow-2xl w-full max-w-md fade-in border border-cyan-500/30">
-    <h2 class="text-3xl font-bold text-center text-cyan-400 mb-6 tracking-wide">Register</h2>
-    <p class="text-gray-400 text-center mb-8">Create an account to access your Data Visualization & Prediction Dashboard</p>
+    <h2 class="text-3xl font-bold text-center text-cyan-400 mb-6 tracking-wide">Reset Password</h2>
+    <p class="text-gray-400 text-center mb-8">Enter your email and new password</p>
 
-    <form id="registerForm" method="POST" class="space-y-6" action="{{ url_for('register') }}">
-      <!-- Full Name -->
-      <div>
-        <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
-        <input type="text" id="name" name="name" placeholder="Your Name" required
-               class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-gray-200 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500 transition duration-200">
-      </div>
-
+    <form id="resetForm" method="POST" class="space-y-6" action="{{ url_for('forgot_password') }}">
       <!-- Email -->
       <div>
         <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
@@ -46,47 +39,30 @@
                class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-gray-200 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500 transition duration-200">
       </div>
 
-      <!-- Password -->
+      <!-- New Password -->
       <div>
-        <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
-        <input type="password" id="password" name="password" placeholder="Enter your password" required minlength="6"
+        <label for="new_password" class="block text-sm font-medium text-gray-300 mb-2">New Password</label>
+        <input type="password" id="new_password" name="new_password" placeholder="Enter new password" required minlength="6"
                class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-gray-200 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500 transition duration-200">
-      </div>
-
-      <!-- Work/Occupation -->
-      <div>
-        <label for="work" class="block text-sm font-medium text-gray-300 mb-2">Occupation</label>
-        <select id="work" name="work" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-gray-200 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500 transition duration-200">
-          <option value="Student">Student</option>
-          <option value="Working">Working Person</option>
-        </select>
       </div>
 
       <!-- Submit Button -->
       <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-semibold py-3 rounded-lg transition duration-300 glow">
-        <i class="fa-solid fa-user-plus mr-2"></i>Register
+        <i class="fa-solid fa-key mr-2"></i>Reset Password
       </button>
     </form>
 
-    <!-- Login Link -->
     <div class="mt-6 text-center text-gray-400 text-sm">
-      <a href="{{ url_for('login') }}" class="text-cyan-400 hover:underline transition">Already have an account? Login</a>
+      <a href="{{ url_for('login') }}" class="text-cyan-400 hover:underline transition">Back to Login</a>
     </div>
   </div>
 
   <!-- JS Validation -->
   <script>
-    document.getElementById("registerForm").addEventListener("submit", function(e) {
-      const name = document.getElementById("name").value.trim();
+    document.getElementById("resetForm").addEventListener("submit", function(e) {
       const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+      const newPassword = document.getElementById("new_password").value;
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-      if (name.length < 2) {
-        alert("Name must be at least 2 characters long.");
-        e.preventDefault();
-        return;
-      }
 
       if (!emailRegex.test(email)) {
         alert("Please enter a valid email address.");
@@ -94,10 +70,9 @@
         return;
       }
 
-      if (password.length < 6) {
+      if (newPassword.length < 6) {
         alert("Password must be at least 6 characters long.");
         e.preventDefault();
-        return;
       }
     });
   </script>
