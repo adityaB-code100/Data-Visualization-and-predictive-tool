@@ -1,0 +1,8 @@
+Flask
+flask-pymongo
+Werkzeug
+pandas
+numpy
+scikit-learn
+plotly
+bson

@@ -57,16 +57,7 @@
     📊 Configure Chart
   </h1>
 
-  <!-- Flash messages -->
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul class="mb-4 space-y-2">
-        {% for message in messages %}
-          <li class="px-4 py-2 rounded-lg text-sm bg-green-700/20 text-green-300">{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
+
 
   <!-- Chart Config Form -->
   <form id="chartForm" action="" method="post" class="space-y-6">
@@ -130,7 +121,7 @@
           <input type="hidden" name="y" value="{{ selected.y or '' }}">
           <input type="hidden" name="title" value="{{ selected.title or '' }}">
           <button type="submit" class="px-4 py-2 rounded-lg bg-cyan-400 text-gray-900 font-semibold glow">
-            <i class="fas fa-download mr-1"></i> Download PNG
+            <i class="fas fa-download mr-1"></i> Download 
           </button>
         </form>
 
@@ -139,7 +130,7 @@
           <input type="hidden" name="x" value="{{ selected.x or '' }}">
           <input type="hidden" name="y" value="{{ selected.y or '' }}">
           <input type="hidden" name="title" value="{{ selected.title or '' }}">
-          <button type="submit" class="px-4 py-2 rounded-lg bg-cyan-600 text-gray-900 font-semibold glow">
+          <button type="submit" class="px-4 py-2 rounded-lg bg-cyan-400 text-gray-900 font-semibold glow">
             <i class="fas fa-save mr-1"></i> Save Chart
           </button>
         </form>

@@ -8,6 +8,8 @@
 
   <!-- Tailwind CDN (for quick prototype) -->
   <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <script>
     // Tailwind config: add Inter and Roboto Mono
     tailwind.config = {
@@ -81,7 +83,12 @@
       <a href="#gallery" class="px-3 py-2 rounded-md hover:bg-white/6">Gallery</a>
       <a href="#about" class="px-3 py-2 rounded-md hover:bg-white/6">About</a>
       <a href="#faq" class="px-3 py-2 rounded-md hover:bg-white/6">FAQ</a>
-      <a href="#" class="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-brandCyan to-brandPurple font-medium">Get Started</a>
+       {% if session.get('user') %}
+                <a href="/profile" class="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-brandCyan to-brandPurple font-medium">Profile</a>
+
+        {% else %}
+                <a href="/login" class="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-brandCyan to-brandPurple font-medium">Get Started</a>
+        {% endif %}
     </div>
   </nav>
 
@@ -183,27 +190,26 @@
     <section id="predict" class="relative flex items-center bg-gradient-to-b from-[#071018] via-[#021014] to-[#051218]">
       <div class="container mx-auto px-6 lg:px-20 py-16">
         <div class="max-w-4xl mx-auto text-center">
-          <h2 class="text-3xl sm:text-4xl font-bold text-brandEmerald">Data Prediction & Forecasting</h2>
+          <h2 class="text-3xl sm:text-4xl font-bold text-brandEmerald">Data Prediction </h2>
           <p class="mt-4 text-gray-300 reveal">Leverage robust models to forecast future outcomes — from sales and demand to environmental metrics and risk scores.</p>
 
           <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div class="p-6 rounded-2xl bg-white/5 reveal">
-              <h3 class="font-semibold">Time-series Forecasts</h3>
-              <p class="text-sm text-gray-400 mt-2">ARIMA, Prophet, and LSTM-backed forecasts for temporal data.</p>
+              <h3 class="font-semibold">Upload dataset</h3>
+              <p class="text-sm text-gray-400 mt-2">csv,excel,spredsheet formats supported.</p>
             </div>
             <div class="p-6 rounded-2xl bg-white/5 reveal">
-              <h3 class="font-semibold">Classification & Risk</h3>
-              <p class="text-sm text-gray-400 mt-2">Predict categories, flags, and risk probabilities with confidence intervals.</p>
+              <h3 class="font-semibold">Data Preprocessing</h3>
+              <p class="text-sm text-gray-400 mt-2">Clean, transform, and prepare your data for model training.</p>
             </div>
             <div class="p-6 rounded-2xl bg-white/5 reveal">
-              <h3 class="font-semibold">What-if Scenarios</h3>
-              <p class="text-sm text-gray-400 mt-2">Run scenario analysis and compare multiple strategies side-by-side.</p>
+              <h3 class="font-semibold">Prediction</h3>
+              <p class="text-sm text-gray-400 mt-2">make prediction on the basis of your data.</p>
             </div>
           </div>
 
           <div class="mt-8 flex items-center justify-center gap-4 reveal">
-            <a class="px-5 py-3 rounded-lg bg-brandEmerald/90 font-medium">Run a forecast</a>
-            <a class="px-5 py-3 rounded-lg border border-white/8">See model docs</a>
+            <a class="px-5 py-3 rounded-lg bg-brandEmerald/90 font-medium" href="/prediction_dashboard">Predict Now</a>
           </div>
         </div>
       </div>
@@ -216,44 +222,121 @@
 
     <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       
-      <!-- Card 1 -->
-      <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition">
-        <img src="{{ url_for('static', filename='images/dashboard_example.png') }}" 
-             alt="Interactive Dashboard" 
-             class="w-full aspect-[16/10] object-cover">
-        <div class="p-4">
-          <h4 class="font-semibold">Interactive Dashboard</h4>
-          <p class="text-sm text-gray-300 mt-2">
-            Filters, linked charts, and exportable images and CSV.
-          </p>
+              <!-- LINE GRAPH -->
+        <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition relative group">
+          <img src="{{ url_for('static', filename='images/Line_graph.png') }}" 
+              alt="Line Graph" 
+              class="w-full aspect-[16/10] object-cover">
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 text-white flex flex-col justify-center items-center p-4 transition-opacity text-center">
+            <h4 class="font-semibold text-lg">Line Graph</h4>
+            <p class="text-sm mt-2">
+              Shows trends over time.<br>
+              Good for continuous data, comparing series,<br>
+              and spotting peaks and troughs.
+            </p>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold">Line Graph</h4>
+            <p class="text-sm text-gray-300 mt-2">Visualize data trends over time.</p>
+          </div>
         </div>
-      </div>
 
-      <!-- Card 2 -->
-      <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition">
-        <img src="{{ url_for('static', filename='images/prediction_chart.png') }}" 
-             alt="Prediction Chart" 
-             class="w-full aspect-[16/10] object-cover">
-        <div class="p-4">
-          <h4 class="font-semibold">Forecast Visuals</h4>
-          <p class="text-sm text-gray-300 mt-2">
-            Confidence bands, historic vs predicted overlays.
-          </p>
+        <!-- BAR CHART -->
+        <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition relative group">
+          <img src="{{ url_for('static', filename='images/bar_chart.png') }}" 
+              alt="Bar Chart" 
+              class="w-full aspect-[16/10] object-cover">
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 text-white flex flex-col justify-center items-center p-4 transition-opacity text-center">
+            <h4 class="font-semibold text-lg">Bar Chart</h4>
+            <p class="text-sm mt-2">
+              Compare categorical data.<br>
+              Height of bars shows value.<br>
+              Good for ranking or frequency analysis.
+            </p>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold">Bar Chart</h4>
+            <p class="text-sm text-gray-300 mt-2">Compare categorical data easily.</p>
+          </div>
         </div>
-      </div>
 
-      <!-- Card 3 -->
-      <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition">
-        <img src="{{ url_for('static', filename='images/geo_heatmap.png') }}" 
-             alt="Geospatial Heatmap" 
-             class="w-full aspect-[16/10] object-cover">
-        <div class="p-4">
-          <h4 class="font-semibold">Geospatial Heatmaps</h4>
-          <p class="text-sm text-gray-300 mt-2">
-            Map-based visualizations for spatial insights.
-          </p>
+        <!-- HISTOGRAM -->
+        <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition relative group">
+          <img src="{{ url_for('static', filename='images/histogram.png') }}" 
+              alt="Histogram" 
+              class="w-full aspect-[16/10] object-cover">
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 text-white flex flex-col justify-center items-center p-4 transition-opacity text-center">
+            <h4 class="font-semibold text-lg">Histogram</h4>
+            <p class="text-sm mt-2">
+              Distribution of continuous data.<br>
+              Shows frequency of values in bins.<br>
+              Useful for understanding data spread and skew.
+            </p>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold">Histogram</h4>
+            <p class="text-sm text-gray-300 mt-2">Visualize data distribution.</p>
+          </div>
         </div>
-      </div>
+
+        <!-- BOX PLOT -->
+        <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition relative group">
+          <img src="{{ url_for('static', filename='images/box.png') }}" 
+              alt="Box Plot" 
+              class="w-full aspect-[16/10] object-cover">
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 text-white flex flex-col justify-center items-center p-4 transition-opacity text-center">
+            <h4 class="font-semibold text-lg">Box Plot</h4>
+            <p class="text-sm mt-2">
+              Summarizes data using quartiles.<br>
+              Shows median, range, and outliers.<br>
+              Useful for spotting skew and spread.
+            </p>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold">Box Plot</h4>
+            <p class="text-sm text-gray-300 mt-2">Summarize distribution & outliers.</p>
+          </div>
+        </div>
+
+        <!-- SCATTER PLOT -->
+        <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition relative group">
+          <img src="{{ url_for('static', filename='images/scatter_plot.png') }}" 
+              alt="Scatter Plot" 
+              class="w-full aspect-[16/10] object-cover">
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 text-white flex flex-col justify-center items-center p-4 transition-opacity text-center">
+            <h4 class="font-semibold text-lg">Scatter Plot</h4>
+            <p class="text-sm mt-2">
+              Shows relationship between two variables.<br>
+              Points reveal correlation, trends, and clusters.<br>
+              Good for spotting patterns in large datasets.
+            </p>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold">Scatter Plot</h4>
+            <p class="text-sm text-gray-300 mt-2">Visualize relationships between variables.</p>
+          </div>
+        </div>
+        <!-- PIE CHART -->
+        <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition relative group">
+          <img src="{{ url_for('static', filename='images/pie_chart.png') }}" 
+              alt="Pie Chart" 
+              class="w-full aspect-[16/10] object-cover">
+
+          <!-- Hover overlay -->
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 text-white flex flex-col justify-center items-center p-4 transition-opacity text-center">
+            <h4 class="font-semibold text-lg">Pie Chart</h4>
+            <p class="text-sm mt-2">
+              Represents data as parts of a whole.<br>
+              Each slice shows proportion or percentage.<br>
+              Useful for comparing relative sizes of categories.
+            </p>
+          </div>
+                  <!-- Default content -->
+          <div class="p-4">
+            <h4 class="font-semibold">Pie Chart</h4>
+            <p class="text-sm text-gray-300 mt-2">Visualize data proportions and percentages.</p>
+          </div>
+        </div>
 
     </div>
   </div>
@@ -339,7 +422,62 @@
     </section>
 
     <!-- Footer (short) -->
-    <footer class="py-8 text-center text-sm text-gray-400">© 2025 Data Visualization and Prediction Tool — Built with care</footer>
+<!-- Footer -->
+ <section class="relative flex flex-col items-center justify-center bg-[#0b1220] min-h-screen">
+<footer class="bg-[#0b1220] text-gray-400 pt-12 pb-6">
+  <div class="container mx-auto px-6 lg:px-20">
+    <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-8">
+      
+      <!-- Brand & Description -->
+      <div class="md:w-1/3 text-center md:text-left">
+        <h3 class="text-xl font-bold text-white">DataViz & Predict</h3>
+        <p class="mt-2 text-gray-400 text-sm">
+          Building tools to make analytics accessible and insightful. Explore, visualize, and predict with confidence.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="md:w-1/3 text-center md:text-left">
+        <h4 class="font-semibold text-white mb-2">Quick Links</h4>
+        <ul class="space-y-2">
+          <li><a href="#visualize" class="hover:text-brandCyan transition">Visualize</a></li>
+          <li><a href="#predict" class="hover:text-brandEmerald transition">Predict</a></li>
+          <li><a href="#gallery" class="hover:text-brandPurple transition">Gallery</a></li>
+          <li><a href="#about" class="hover:text-gray-200 transition">About Us</a></li>
+          <li><a href="#faq" class="hover:text-gray-200 transition">FAQ</a></li>
+        </ul>
+      </div>
+
+      <!-- Social / Contact -->
+      <div class="md:w-1/3 text-center md:text-left">
+        <h4 class="font-semibold text-white mb-2">Follow Us</h4>
+        <div class="flex justify-center md:justify-start gap-4 mt-2">
+          <a href="#" class="text-gray-400 hover:text-brandCyan transition">
+            <i class="fab fa-twitter fa-lg"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-brandPurple transition">
+            <i class="fab fa-linkedin fa-lg"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-brandEmerald transition">
+            <i class="fab fa-github fa-lg"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-brandAmber transition">
+            <i class="fas fa-envelope fa-lg"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="mt-8 border-t border-gray-700 pt-6 text-center text-sm text-gray-500">
+      © 2025 Data Visualization & Prediction Tool. All rights reserved.
+    </div>
+  </div>
+</footer>
+</section>
+
+<!-- Font Awesome CDN for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
   </main>
 
