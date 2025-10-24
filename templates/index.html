@@ -1,98 +1,379 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Data Intelligence Hub</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Data Visualization & Prediction Tool — Landing</title>
+  <meta name="description" content="Landing page for a Data Visualization and Prediction Tool. Full-screen scroll layout with six sections: Hero, Visualization, Prediction, Gallery, About Us, FAQ." />
+
+  <!-- Tailwind CDN (for quick prototype) -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Tailwind config: add Inter and Roboto Mono
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+            mono: ['Roboto Mono', 'ui-monospace', 'SFMono-Regular']
+          },
+          colors: {
+            brandCyan: '#06b6d4',
+            brandPurple: '#a855f7',
+            brandEmerald: '#10b981',
+            brandAmber: '#facc15'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Global scroll snap and section sizing */
+    html, body {
+      height: 100%;
+      background: #0b1220;
+    }
+    main {
+      height: 100vh;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    section {
+      min-height: 100vh;
+      scroll-snap-align: start;
+    }
+
+    /* Smooth fade/slide utilities used by JS */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Decorative animated gradient orbs */
+    .orb {
+      position: absolute; border-radius: 9999px; filter: blur(60px); opacity: .55; pointer-events:none;
+    }
+
+    /* Simple scrollbar styling for desktop */
+    @media (hover: hover) {
+      main::-webkit-scrollbar { width: 10px; }
+      main::-webkit-scrollbar-track { background: transparent; }
+      main::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 999px; }
+    }
+  </style>
 </head>
+<body class="text-gray-100 font-sans antialiased">
 
-<body class="bg-gradient-to-br from-gray-900 via-gray-950 to-black text-gray-100 font-inter">
+  <!-- Header (fixed top nav) -->
+  <nav class="fixed inset-x-6 top-6 z-40 flex items-center justify-between">
+    <a href="#hero" class="flex items-center gap-3 group">
+      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brandCyan to-brandPurple flex items-center justify-center shadow-lg">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <path d="M3 17L7 13L11 17L17 11" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="text-sm font-semibold">DataViz & Predict</span>
+    </a>
 
-  <!-- Header -->
-  <header class="text-center px-4 pt-12 sm:pt-16 lg:pt-24">
-    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-      📊 Data Intelligence Hub
-    </h1>
-    <p class="mt-4 text-gray-400 sm:text-lg lg:text-xl max-w-2xl mx-auto">
-      Upload your datasets and <b>visualize</b> insights or <b>predict</b> future trends effortlessly.
-    </p>
-  </header>
+    <div class="hidden md:flex items-center gap-4 text-sm">
+      <a href="#visualize" class="px-3 py-2 rounded-md hover:bg-white/6">Visualize</a>
+      <a href="#predict" class="px-3 py-2 rounded-md hover:bg-white/6">Predict</a>
+      <a href="#gallery" class="px-3 py-2 rounded-md hover:bg-white/6">Gallery</a>
+      <a href="#about" class="px-3 py-2 rounded-md hover:bg-white/6">About</a>
+      <a href="#faq" class="px-3 py-2 rounded-md hover:bg-white/6">FAQ</a>
+      <a href="#" class="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-brandCyan to-brandPurple font-medium">Get Started</a>
+    </div>
+  </nav>
 
-  <!-- Upload Buttons -->
-  <section class="mt-12 px-4 flex flex-col sm:flex-row justify-center gap-6 max-w-3xl mx-auto">
-    <form id="uploadFormVisualize" action="/visualize_dashboard" class="flex-1">
-      <button
-        id="uploadButtonVisualize"
-        type="submit"
-        class="w-full py-4 rounded-xl font-semibold text-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg hover:shadow-cyan-500/30 transition-transform transform hover:-translate-y-1"
+  <main id="viewport" class="relative">
+
+    <!-- HERO / Section 1 -->
+    <section id="hero" class="relative flex items-center justify-center bg-gradient-to-b from-[#070912] via-[#0b1220] to-[#05060a]">
+      <!-- Decorative orbs -->
+      <div class="orb" style="width:420px;height:420px;left:-8%;top:10%;background:linear-gradient(135deg, rgba(6,182,212,0.28), rgba(168,85,247,0.18));"></div>
+      <div class="orb" style="width:320px;height:320px;right:-6%;bottom:8%;background:linear-gradient(135deg, rgba(16,185,129,0.14), rgba(250,204,21,0.10));"></div>
+
+      <div class="container mx-auto px-6 lg:px-20 text-center relative z-10">
+        <div class="max-w-3xl mx-auto">
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-brandCyan to-brandPurple">
+            Unlock the Power of Your Data
+          </h1>
+          <p class="mt-6 text-gray-300 text-lg sm:text-xl reveal">Upload datasets, explore interactive visualizations, and forecast future trends with confidence.</p>
+
+          <div class="mt-8 flex flex-col sm:flex-row gap-4 sm:justify-center reveal">
+            <a href="#visualize" class="inline-flex items-center justify-center px-6 py-3 rounded-xl font-medium shadow-lg bg-gradient-to-r from-brandCyan to-brandPurple hover:scale-[1.02] transform transition">📈 Visualize Data</a>
+            <a href="#predict" class="inline-flex items-center justify-center px-6 py-3 rounded-xl font-medium shadow-lg bg-gradient-to-r from-brandEmerald to-green-600 hover:scale-[1.02] transform transition">🤖 Predict Trends</a>
+          </div>
+
+          <div class="mt-10 text-sm text-gray-400 flex items-center justify-center gap-2 reveal">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Scroll to explore</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- small hero chart mockup bottom-right (visual hint) -->
+      <div class="absolute right-12 bottom-12 hidden lg:block">
+        <div class="w-64 h-40 rounded-2xl bg-gradient-to-b from-white/6 to-white/3 p-3 backdrop-blur-md shadow-2xl">
+          <!-- miniature chart bars (CSS) -->
+          <div class="flex items-end gap-2 h-full mt-2">
+            <div class="w-3 rounded-sm bg-brandCyan h-10"></div>
+            <div class="w-3 rounded-sm bg-brandPurple h-20"></div>
+            <div class="w-3 rounded-sm bg-brandEmerald h-14"></div>
+            <div class="w-3 rounded-sm bg-brandAmber h-24"></div>
+            <div class="w-3 rounded-sm bg-white/70 h-8"></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Section 2: About Data Visualization -->
+    <section id="visualize" class="relative flex items-center bg-gradient-to-b from-[#071026] via-[#071026] to-[#081222]">
+      <div class="container mx-auto px-6 lg:px-20 py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+          <!-- text -->
+          <div>
+            <h2 class="text-3xl sm:text-4xl font-bold text-brandCyan">Data Visualization</h2>
+            <p class="mt-4 text-gray-300 max-w-xl reveal">Data visualization converts raw numbers into engaging visuals — enabling people to understand patterns, spot anomalies, and communicate insights clearly.</p>
+
+            <ul class="mt-6 space-y-3 text-gray-300">
+              <li class="flex items-start gap-3 reveal"><span class="w-8 h-8 rounded-md bg-white/6 flex items-center justify-center">📊</span><div><b>Discover patterns</b><div class="text-sm text-gray-400">Quickly surface trends and correlations.</div></div></li>
+              <li class="flex items-start gap-3 reveal"><span class="w-8 h-8 rounded-md bg-white/6 flex items-center justify-center">🔎</span><div><b>Communicate findings</b><div class="text-sm text-gray-400">Share interactive dashboards with stakeholders.</div></div></li>
+              <li class="flex items-start gap-3 reveal"><span class="w-8 h-8 rounded-md bg-white/6 flex items-center justify-center">⚙️</span><div><b>Explore interactively</b><div class="text-sm text-gray-400">Filters, drill-downs and linked charts.</div></div></li>
+            </ul>
+
+            <div class="mt-8 flex gap-4 reveal">
+              <a class="px-5 py-3 rounded-lg bg-white/6 hover:bg-white/10" href="/visualize_dashboard">Try Now</a>
+            </div>
+          </div>
+
+          <!-- mock chart / interactive preview -->
+          <div class="relative">
+            <div class="w-full aspect-[16/10] rounded-2xl p-6 bg-gradient-to-b from-white/5 to-white/3 backdrop-blur-sm shadow-xl">
+              <!-- Placeholder complex visualization using SVG -->
+              <svg viewBox="0 0 600 400" class="w-full h-full" aria-hidden>
+                <defs>
+                  <linearGradient id="g1" x1="0" x2="1">
+                    <stop offset="0" stop-color="#06b6d4" stop-opacity=".9" />
+                    <stop offset="1" stop-color="#a855f7" stop-opacity=".9" />
+                  </linearGradient>
+                </defs>
+                <rect x="0" y="0" width="100%" height="100%" rx="18" ry="18" fill="transparent" />
+                <!-- axes -->
+                <g stroke="rgba(255,255,255,0.08)">
+                  <line x1="40" y1="360" x2="560" y2="360" />
+                  <line x1="40" y1="40" x2="40" y2="360" />
+                </g>
+                <!-- sample line -->
+                <polyline fill="none" stroke="url(#g1)" stroke-width="4" points="60,300 120,240 180,260 240,180 300,210 360,140 420,160 480,120 540,90"/>
+                <!-- annotations -->
+                <circle cx="540" cy="90" r="6" fill="#a855f7" />
+                <text x="420" y="110" fill="#d1d5db" font-size="12">Peak</text>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: About Data Prediction -->
+    <section id="predict" class="relative flex items-center bg-gradient-to-b from-[#071018] via-[#021014] to-[#051218]">
+      <div class="container mx-auto px-6 lg:px-20 py-16">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-3xl sm:text-4xl font-bold text-brandEmerald">Data Prediction & Forecasting</h2>
+          <p class="mt-4 text-gray-300 reveal">Leverage robust models to forecast future outcomes — from sales and demand to environmental metrics and risk scores.</p>
+
+          <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="p-6 rounded-2xl bg-white/5 reveal">
+              <h3 class="font-semibold">Time-series Forecasts</h3>
+              <p class="text-sm text-gray-400 mt-2">ARIMA, Prophet, and LSTM-backed forecasts for temporal data.</p>
+            </div>
+            <div class="p-6 rounded-2xl bg-white/5 reveal">
+              <h3 class="font-semibold">Classification & Risk</h3>
+              <p class="text-sm text-gray-400 mt-2">Predict categories, flags, and risk probabilities with confidence intervals.</p>
+            </div>
+            <div class="p-6 rounded-2xl bg-white/5 reveal">
+              <h3 class="font-semibold">What-if Scenarios</h3>
+              <p class="text-sm text-gray-400 mt-2">Run scenario analysis and compare multiple strategies side-by-side.</p>
+            </div>
+          </div>
+
+          <div class="mt-8 flex items-center justify-center gap-4 reveal">
+            <a class="px-5 py-3 rounded-lg bg-brandEmerald/90 font-medium">Run a forecast</a>
+            <a class="px-5 py-3 rounded-lg border border-white/8">See model docs</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Gallery -->
+    <section id="gallery" class="relative flex items-center bg-gradient-to-b from-[#06111a] to-[#061426]">
+  <div class="container mx-auto px-6 lg:px-20 py-16">
+    <h2 class="text-3xl font-bold text-center text-brandPurple">Gallery — Visuals & Dashboards</h2>
+
+    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      <!-- Card 1 -->
+      <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition">
+        <img src="{{ url_for('static', filename='images/dashboard_example.png') }}" 
+             alt="Interactive Dashboard" 
+             class="w-full aspect-[16/10] object-cover">
+        <div class="p-4">
+          <h4 class="font-semibold">Interactive Dashboard</h4>
+          <p class="text-sm text-gray-300 mt-2">
+            Filters, linked charts, and exportable images and CSV.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition">
+        <img src="{{ url_for('static', filename='images/prediction_chart.png') }}" 
+             alt="Prediction Chart" 
+             class="w-full aspect-[16/10] object-cover">
+        <div class="p-4">
+          <h4 class="font-semibold">Forecast Visuals</h4>
+          <p class="text-sm text-gray-300 mt-2">
+            Confidence bands, historic vs predicted overlays.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition">
+        <img src="{{ url_for('static', filename='images/geo_heatmap.png') }}" 
+             alt="Geospatial Heatmap" 
+             class="w-full aspect-[16/10] object-cover">
+        <div class="p-4">
+          <h4 class="font-semibold">Geospatial Heatmaps</h4>
+          <p class="text-sm text-gray-300 mt-2">
+            Map-based visualizations for spatial insights.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+    <!-- Section 5: About Us -->
+    <section id="about" class="relative flex items-center bg-gradient-to-b from-[#081026] to-[#051018]">
+      <div class="container mx-auto px-6 lg:px-20 py-16">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-3xl font-bold">About Us</h2>
+          <p class="mt-4 text-gray-300">We are a small team of engineers and designers building tools to make analytics accessible to organizations of any size.</p>
+         <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
+  
+  <!-- Member 1 -->
+  <div class="text-center">
+    <div class="w-28 h-28 mx-auto rounded-full overflow-hidden bg-white/10 border border-gray-700 shadow-lg">
+      <img 
+        src="{{ url_for('static', filename='images/aditya.jpg') }}" 
+        alt="Aditya Bandewar"
+        class="w-full h-full object-cover"
+        onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-2xl text-gray-300\'>AD</div>';"
       >
-        📈 Upload for Visualization
-      </button>
-    </form>
-    <form id="uploadFormPredict" action="/prediction_dashboard" class="flex-1">
-      <button
-        id="uploadButtonPredict"
-        type="submit"
-        class="w-full py-4 rounded-xl font-semibold text-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white shadow-lg hover:shadow-green-500/30 transition-transform transform hover:-translate-y-1"
+    </div>
+    <h4 class="mt-4 font-semibold text-gray-100">Aditya Bandewar</h4>
+    <p class="text-sm text-gray-400">Engineering Student</p>
+  </div>
+
+  <!-- Member 2 -->
+  <div class="text-center">
+    <div class="w-28 h-28 mx-auto rounded-full overflow-hidden bg-white/10 border border-gray-700 shadow-lg">
+      <img 
+        src="{{ url_for('static', filename='images/pawan.png') }}" 
+        alt="Pawan Wadje"
+        class="w-full h-full object-cover"
+        onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-2xl text-gray-300\'>PW</div>';"
       >
-        🤖 Upload for Prediction
-      </button>
-    </form>
-  </section>
-
-  <!-- Tips -->
-  <section class="mt-8 px-4 max-w-3xl mx-auto">
-    <details class="bg-gray-800/70 border border-gray-700 rounded-xl p-4 text-gray-300 transition-all hover:border-cyan-500/50">
-      <summary class="cursor-pointer font-semibold text-cyan-400">💡 Data Tips</summary>
-      <p class="mt-2 text-sm sm:text-base text-gray-400 leading-relaxed">
-        • Use UTF-8 encoded CSV files.<br>
-        • Ensure your CSV includes headers.<br>
-        • Visualization may take longer for large datasets.<br>
-        • Predictions work best with clean numeric data.
-      </p>
-    </details>
-  </section>
-
-  <!-- Features Section -->
-  <section class="mt-16 px-4 max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    <div class="bg-gray-800/70 p-6 rounded-xl flex flex-col items-center text-center hover:scale-105 transition-transform">
-      <div class="text-cyan-400 text-3xl mb-3">📂</div>
-      <h3 class="font-semibold text-xl mb-2">Easy Upload</h3>
-      <p class="text-gray-400 text-sm sm:text-base">Quickly upload CSV, Excel, or other common file formats.</p>
     </div>
+    <h4 class="mt-4 font-semibold text-gray-100">Pawan Wadje</h4>
+    <p class="text-sm text-gray-400">Engineering Student</p>
+  </div>
 
-    <div class="bg-gray-800/70 p-6 rounded-xl flex flex-col items-center text-center hover:scale-105 transition-transform">
-      <div class="text-purple-400 text-3xl mb-3">📊</div>
-      <h3 class="font-semibold text-xl mb-2">Interactive Visuals</h3>
-      <p class="text-gray-400 text-sm sm:text-base">Explore data with dynamic charts, graphs, and dashboards.</p>
-    </div>
+</div>
 
-    <div class="bg-gray-800/70 p-6 rounded-xl flex flex-col items-center text-center hover:scale-105 transition-transform">
-      <div class="text-green-400 text-3xl mb-3">🤖</div>
-      <h3 class="font-semibold text-xl mb-2">Predictive Analytics</h3>
-      <p class="text-gray-400 text-sm sm:text-base">Forecast trends, sales, health metrics, or environmental changes using AI.</p>
-    </div>
 
-    <div class="bg-gray-800/70 p-6 rounded-xl flex flex-col items-center text-center hover:scale-105 transition-transform">
-      <div class="text-yellow-400 text-3xl mb-3">⚡</div>
-      <h3 class="font-semibold text-xl mb-2">Data-Driven Decisions</h3>
-      <p class="text-gray-400 text-sm sm:text-base">Transform raw data into actionable intelligence to stay ahead.</p>
-    </div>
-  </section>
+          <div class="mt-8 flex items-center justify-center gap-4">
+            <a class="px-5 py-3 rounded-lg bg-white/6">Contact us</a>
+          </div>
+      </div>
+    </section>
+
+    <!-- Section 6: FAQ -->
+    <section id="faq" class="relative flex items-center bg-gradient-to-b from-[#021018] to-[#020814]">
+      <div class="container mx-auto px-6 lg:px-20 py-16">
+        <div class="max-w-3xl mx-auto">
+          <h2 class="text-3xl font-bold text-center">Frequently Asked Questions</h2>
+          <p class="text-center text-gray-400 mt-2">Answers to common queries about formats, security and models.</p>
+
+          <div class="mt-8 space-y-4">
+            <details class="bg-white/4 rounded-xl p-4">
+              <summary class="cursor-pointer font-semibold">What file types are supported?</summary>
+              <div class="mt-2 text-gray-300">We support CSV, XLSX and JSON file formats. For best results include a header row and clean numeric columns.</div>
+            </details>
+
+            <details class="bg-white/4 rounded-xl p-4">
+              <summary class="cursor-pointer font-semibold">Is my data secure?</summary>
+              <div class="mt-2 text-gray-300">Yes — data is encrypted at rest and in transit. You can also enable disposable sessions and local-only processing in some deployments.</div>
+            </details>
+
+            <details class="bg-white/4 rounded-xl p-4">
+              <summary class="cursor-pointer font-semibold">Do I need coding experience?</summary>
+              <div class="mt-2 text-gray-300">No — the UI is designed for analysts and non-developers. Advanced users can run custom scripts or export cleaned data.</div>
+            </details>
+
+            <details class="bg-white/4 rounded-xl p-4">
+              <summary class="cursor-pointer font-semibold">How are predictions created?</summary>
+              <div class="mt-2 text-gray-300">We offer configurable models  with explainability outputs and confidence intervals.</div>
+            </details>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer (short) -->
+    <footer class="py-8 text-center text-sm text-gray-400">© 2025 Data Visualization and Prediction Tool — Built with care</footer>
+
+  </main>
 
   <script>
-    function setupForm(formId, buttonId) {
-      const form = document.getElementById(formId);
-      const button = document.getElementById(buttonId);
-      form.addEventListener("submit", () => {
-        button.disabled = true;
-        button.innerHTML = "⏳ Processing...";
-        button.classList.add("opacity-60");
+    // Reveal on scroll: simple IntersectionObserver that toggles .visible on .reveal elements
+    (function(){
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) e.target.classList.add('visible');
+        });
+      }, { threshold: 0.15 });
+
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+      // Keyboard navigation for sections (accessibility)
+      const sections = Array.from(document.querySelectorAll('section'));
+      document.addEventListener('keydown', (ev) => {
+        if (['ArrowDown','ArrowUp','PageDown','PageUp'].includes(ev.key)) {
+          ev.preventDefault();
+          const visibleIndex = sections.findIndex(s => s.getBoundingClientRect().top >= -10 && s.getBoundingClientRect().top < window.innerHeight/2);
+          if (ev.key === 'ArrowDown' || ev.key === 'PageDown') {
+            const next = sections[Math.min(sections.length-1, visibleIndex+1)]; next && next.scrollIntoView({behavior:'smooth'});
+          } else {
+            const prev = sections[Math.max(0, visibleIndex-1)]; prev && prev.scrollIntoView({behavior:'smooth'});
+          }
+        }
       });
-    }
-    setupForm("uploadFormVisualize", "uploadButtonVisualize");
-    setupForm("uploadFormPredict", "uploadButtonPredict");
+
+      // Small mobile optimization: reduce orb opacity / remove heavy transforms if prefers-reduced-motion
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll('.orb').forEach(o=> o.style.display='none');
+      }
+    })();
   </script>
+
 </body>
 </html>
