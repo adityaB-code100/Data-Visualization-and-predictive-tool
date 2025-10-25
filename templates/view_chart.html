@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ chart.name }} - View Chart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col items-center py-10">
+
+  <div class="w-full max-w-4xl bg-gray-900/70 p-8 rounded-2xl shadow-lg">
+    <h1 class="text-3xl font-bold mb-4 text-cyan-400">{{ chart.name }}</h1>
+
+    <div class="w-full mb-6">
+      <img src="data:image/png;base64,{{ chart.image_base64 }}" 
+           alt="{{ chart.name }}" 
+           class="rounded-xl w-full border border-gray-700 shadow-lg">
+    </div>
+
+    <div class="text-sm text-gray-400 space-y-2">
+      <p><span class="font-semibold text-gray-200">Chart Type:</span> {{ chart.chart_type }}</p>
+      {% if chart.x %}<p><span class="font-semibold text-gray-200">X-axis:</span> {{ chart.x }}</p>{% endif %}
+      {% if chart.y %}<p><span class="font-semibold text-gray-200">Y-axis:</span> {{ chart.y }}</p>{% endif %}
+      <p><span class="font-semibold text-gray-200">Created At:</span> {{ chart.created_at }}</p>
+    </div>
+
+    <div class="mt-6 flex justify-between items-center">
+      <a href="/profile" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg">← Back to Profile</a>
+      <form action="/delete_chart/{{ chart_id }}" method="POST">
+        <button class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white">Delete Chart</button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -28,7 +28,8 @@
 </head>
 <body class="flex items-center justify-center min-h-screen px-4">
   <div class="bg-gray-900 bg-opacity-80 backdrop-blur-xl p-8 rounded-2xl shadow-2xl w-full max-w-md fade-in border border-cyan-500/30">
-    <h2 class="text-3xl font-bold text-center text-cyan-400 mb-6 tracking-wide">Reset Password</h2>
+    {% if session.get('user') %}<h2 class="text-3xl font-bold text-center text-cyan-400 mb-6 tracking-wide">Update Password</h2>
+   {% else %} <h2 class="text-3xl font-bold text-center text-cyan-400 mb-6 tracking-wide">Reset Password</h2> {% endif %}
     <p class="text-gray-400 text-center mb-8">Enter your email and new password</p>
 
     <form id="resetForm" method="POST" class="space-y-6" action="{{ url_for('forgot_password') }}">
@@ -53,7 +54,8 @@
     </form>
 
     <div class="mt-6 text-center text-gray-400 text-sm">
-      <a href="{{ url_for('login') }}" class="text-cyan-400 hover:underline transition">Back to Login</a>
+       {% if session.get('user') %}<a href="{{ url_for('profile') }}" class="text-cyan-400 hover:underline transition">Back to profile</a>
+       {% else %}<a href="{{ url_for('login') }}" class="text-cyan-400 hover:underline transition">Back to Login</a>{% endif %}
     </div>
   </div>
 
