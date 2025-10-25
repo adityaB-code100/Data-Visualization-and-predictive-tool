@@ -1,8 +1,12 @@
 Flask
-flask-pymongo
+Flask-PyMongo
 Werkzeug
 pandas
 numpy
 scikit-learn
 plotly
 bson
+Flask-WTF
+WTForms
+Flask-Mail
+pytz
