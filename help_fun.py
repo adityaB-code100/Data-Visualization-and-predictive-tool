@@ -69,7 +69,6 @@ def build_figure(
     y: Optional[str],
     
     title: str,
-    color_continuous_scale: Optional[str],
 ) -> "px.Figure":
     chart_type = (chart or "").strip().lower()  # normalize input
 
