@@ -461,13 +461,6 @@ with open('config.json') as f:
     config = json.load(f)
 
 
-# CSRF protection
-csrf = CSRFProtect(app)
-
-# MongoDB setup
-app.config["MONGO_URI"] = config["MONGO_URI"]
-mongo = PyMongo(app)
-contacts_collection = mongo.db.contacts
 
 # Flask-Mail configuration for Gmail SSL
 app.config.update(

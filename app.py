@@ -211,6 +211,48 @@ def forgot_password():
         return redirect(url_for("login"))
     return render_template("forgot.html")
 
+# -------------------- Contact --------------------
+# Contact route
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    form = ContactForm()
+    if request.method == 'POST':
+        try:
+            # Save to MongoDB
+            contact_entry = {
+                "name": request.form['name'],
+                "email": request.form['email'],
+                "subject": request.form['subject'],
+                "reason": request.form.get('reason'),
+                "phone": request.form.get('phone'),
+                "company": request.form.get('company'),
+                "message": request.form['message']
+            }
+            contacts_collection.insert_one(contact_entry)
+
+            # Send email
+            msg = Message(
+                subject=f"New Contact: {request.form['subject']}",
+                sender=config['gmail_user'],
+                recipients=[config['ADMIN_EMAIL']],
+                body=f"""
+                    Name: {request.form['name']}
+                    Email: {request.form['email']}
+                    Reason: {request.form.get('reason')}
+                    Phone: {request.form.get('phone')}
+                    Company: {request.form.get('company')}
+                    Message: {request.form['message']}
+                                    """
+            )
+            mail.send(msg)
+
+            return jsonify({'status': 'success', 'message': 'Message sent successfully!'})
+        except Exception as e:
+            print(e)
+            return jsonify({'status': 'error', 'message': 'Failed to send message.'})
+
+    return render_template('contact.html', form=form)
+
 # -------------------- Global Variables --------------------
 DATAFRAMES = {}
 model = None
@@ -463,6 +505,8 @@ def add_header(response):
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
     return response
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html"), 404
@@ -475,46 +519,7 @@ def internal_server_error(e):
 
 
 
-# Contact route
-@app.route('/contact', methods=['GET', 'POST'])
-def contact():
-    form = ContactForm()
-    if request.method == 'POST':
-        try:
-            # Save to MongoDB
-            contact_entry = {
-                "name": request.form['name'],
-                "email": request.form['email'],
-                "subject": request.form['subject'],
-                "reason": request.form.get('reason'),
-                "phone": request.form.get('phone'),
-                "company": request.form.get('company'),
-                "message": request.form['message']
-            }
-            contacts_collection.insert_one(contact_entry)
 
-            # Send email
-            msg = Message(
-                subject=f"New Contact: {request.form['subject']}",
-                sender=config['gmail_user'],
-                recipients=[config['ADMIN_EMAIL']],
-                body=f"""
-Name: {request.form['name']}
-Email: {request.form['email']}
-Reason: {request.form.get('reason')}
-Phone: {request.form.get('phone')}
-Company: {request.form.get('company')}
-Message: {request.form['message']}
-                """
-            )
-            mail.send(msg)
-
-            return jsonify({'status': 'success', 'message': 'Message sent successfully!'})
-        except Exception as e:
-            print(e)
-            return jsonify({'status': 'error', 'message': 'Failed to send message.'})
-
-    return render_template('contact.html', form=form)
 
 if __name__ == '__main__':
     app.run(debug=True)
