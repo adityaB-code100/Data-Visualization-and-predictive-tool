@@ -31,7 +31,7 @@ app = Flask(__name__)
 with open("config.json") as f:
     config = json.load(f)
 # -------------------- MongoDB Setup --------------------
-uri=config["MONGO_URI"]
+uri=config["MONGO_URI1"]
 app.config["MONGO_URI"] = uri
 
 mongo = PyMongo(app)
@@ -61,11 +61,6 @@ class ContactForm(FlaskForm):
     name = StringField('Full Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     subject = StringField('Subject', validators=[DataRequired()])
-    reason = SelectField('Reason', choices=[('','Select'),('General Inquiry','General Inquiry'),
-                                            ('Support','Support'),('Partnership','Partnership'),
-                                            ('Feedback','Feedback')])
-    phone = StringField('Phone')
-    company = StringField('Company')
     message = TextAreaField('Message', validators=[DataRequired()])
 
 # -------------------- Session / Login Helpers --------------------
@@ -250,10 +245,10 @@ def contact():
             )
             mail.send(msg)
 
-            return jsonify({'status': 'success', 'message': 'Message sent successfully!'})
+            return jsonify({'status': 'success', 'message': 'Contact Request sent successfully!'})
         except Exception as e:
             print(e)
-            return jsonify({'status': 'error', 'message': 'Failed to send message.'})
+            return jsonify({'status': 'error', 'message': 'Failed to send Contact Request.'})
 
     return render_template('contact.html', form=form)
 
