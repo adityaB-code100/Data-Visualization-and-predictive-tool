@@ -31,8 +31,9 @@ app = Flask(__name__)
 with open("config.json") as f:
     config = json.load(f)
 # -------------------- MongoDB Setup --------------------
-app.config["MONGO_URI"] = "mongodb+srv://hyperlocalaqi_db_user:Test1234@aqiproject.7r8nvxf.mongodb.net/datavisulisation?retryWrites=true&w=majority"
-#config["MONGO_URI"]
+uri=config["MONGO_URI"]
+app.config["MONGO_URI"] = uri
+
 mongo = PyMongo(app)
 db = mongo.db
 users_collection = db["users"]
@@ -51,7 +52,7 @@ app.config.update(
     MAIL_USE_TLS=config['mail_use_tls'],
     MAIL_USE_SSL=config['mail_use_ssl'],
     MAIL_USERNAME=config['gmail_user'],
-    MAIL_PASSWORD=config['gmail_password']
+    MAIL_PASSWORD=config['gmail_password'],
 )
 mail = Mail(app)
 
