@@ -198,351 +198,342 @@
       <p>Processing...</p>
     </div>
   <p class="mt-6 text-center text-cyan-400 hover:text-cyan-200 transition">
-    <a href="/"><i class="fas fa-arrow-left mr-1"></i> Upload another file</a>
+    <a href="/"><i class="fas fa-arrow-left mr-1"></i> Back to Home</a>
   </p>
+  
 
   </div>
 
 
     <script>
-    let columnInfo = {};
-    let selectedFeatures = [];
-    
-    $(document).ready(function(){
-        // File upload handling
-        $('#fileInput').on('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                uploadFile(file);
-            }
-        });
-        
-        // Drag and drop functionality
-        const uploadArea = $('#uploadArea');
-        uploadArea.on('dragover', function(e) {
-            e.preventDefault();
-            $(this).addClass('dragover');
-        });
-        
-        uploadArea.on('dragleave', function(e) {
-            e.preventDefault();
-            $(this).removeClass('dragover');
-        });
-        
-        uploadArea.on('drop', function(e) {
-            e.preventDefault();
-            $(this).removeClass('dragover');
-            const files = e.originalEvent.dataTransfer.files;
-            if (files.length > 0) {
-                uploadFile(files[0]);
-            }
-        });
-        
-        // Target column selection
-        $('#targetCol').on('change', function() {
-            const selectedTarget = $(this).val();
-            updateFeatureCheckboxes(selectedTarget);
-            updateTrainButton();
-        });
-        
-        // Feature selection
-        $(document).on('change', 'input[name="features"]', function() {
-            updateTrainButton();
-        });
-        
-        // Train model
-        $('#trainBtn').on('click', function() {
-            trainModel();
-        });
-        
-        // Make prediction
-        $('#predictBtn').on('click', function() {
-            makePrediction();
-            });
-        });
+   let columnInfo = {};
+let selectedFeatures = [];
+let target = null;
 
-    function showLoading() {
-        $('#loading').show();
-    }
-    
-    function hideLoading() {
-        $('#loading').hide();
-    }
-    
-    function showError(elementId, message) {
-        $(elementId).html(message).removeClass('hidden');
-        setTimeout(() => $(elementId).addClass('hidden'), 5000);
-    }
-    
-    function showInfo(elementId, message) {
-        $(elementId).html(message).removeClass('hidden');
-    }
-    
-    function hideMessages() {
-        $('.error, .info').addClass('hidden');
-    }
-    
-    function uploadFile(file) {
-        hideMessages();
-        showLoading();
-        
-        const formData = new FormData();
-        formData.append('file', file);
-        
-            $.ajax({
-            url: '/upload_file',
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-                hideLoading();
-                if (response.error) {
-                    showError('#uploadError', response.error);
-                } else {
-                    columnInfo = response.column_info;
-                    populateColumns(response.columns);
-                    showInfo('#uploadInfo', response.message);
-                    $('#step2').removeClass('hidden').addClass('active');
-                    $('#step1').removeClass('active');
-                }
-            },
-            error: function(xhr) {
-                hideLoading();
-                const error = xhr.responseJSON ? xhr.responseJSON.error : 'Upload failed';
-                showError('#uploadError', error);
-            }
-        });
-    }
-    
-    function populateColumns(columns) {
-        // Populate target column dropdown (only numerical columns, exclude date columns)
-        $('#targetCol').empty().append('<option value="">Select target column...</option>');
-        columns.forEach(function(col) {
-            const info = columnInfo[col];
-            if (info.is_numerical && !info.is_date) {
-                const option = $(`<option value="${col}">${col} (Numerical)</option>`);
-                if (info.null_count > 0) {
-                    option.attr('title', `${info.null_count} missing values`);
-                }
-                $('#targetCol').append(option);
-            }
-        });
-        
-        // Populate feature checkboxes (exclude target column and date columns)
-        $('#featureCols').empty();
-        columns.forEach(function(col) {
-            const info = columnInfo[col];
-            
-            // Skip date columns
-            if (info.is_date) {
-                return;
-            }
-            
-            const checkboxItem = $(`
-                <div class="checkbox-item">
-                    <input type="checkbox" name="features" value="${col}" id="feature_${col}">
-                    <label for="feature_${col}">${col}</label>
-                </div>
-            `);
-            
-            // Add column type indicator
-            const typeIndicator = info.is_numerical ? '🔢 Numerical' : '📝 Categorical';
-            checkboxItem.append(`<div class="column-info">${typeIndicator}</div>`);
-            
-            if (info.null_count > 0) {
-                checkboxItem.append(`<div class="column-info">⚠️ ${info.null_count} missing values</div>`);
-            }
-            
-            if (info.sample_values.length > 0) {
-                const sampleText = info.sample_values.slice(0, 2).join(', ');
-                checkboxItem.append(`<div class="column-info">📊 Sample: ${sampleText}</div>`);
-            }
-            
-            $('#featureCols').append(checkboxItem);
-        });
-        
-        // Show info about hidden date columns
-        const dateColumns = columns.filter(col => columnInfo[col].is_date);
-        if (dateColumns.length > 0) {
-            const hiddenInfo = $(`
-                <div class="info" style="margin-top: 15px;">
-                    <strong>📅 Date columns hidden:</strong> ${dateColumns.join(', ')} 
-                    <br><small>Date columns are automatically excluded from prediction models.</small>
-                </div>
-            `);
-            $('#featureCols').after(hiddenInfo);
-        }
-    }
-    
-    function updateFeatureCheckboxes(selectedTarget) {
-        // Hide the target column from feature selection
-        $('input[name="features"]').each(function() {
-            const featureName = $(this).val();
-            const checkboxItem = $(this).closest('.checkbox-item');
-            
-            if (featureName === selectedTarget) {
-                checkboxItem.hide();
-                $(this).prop('checked', false);
+$(document).ready(function(){
+
+    // File upload handling
+    $('#fileInput').on('change', function(e) {
+        const file = e.target.files[0];
+        if (file) uploadFile(file);
+    });
+
+    // Drag & drop
+    const uploadArea = $('#uploadArea');
+    uploadArea.on('dragover', function(e) {
+        e.preventDefault();
+        $(this).addClass('dragover');
+    });
+
+    uploadArea.on('dragleave', function(e) {
+        e.preventDefault();
+        $(this).removeClass('dragover');
+    });
+
+    uploadArea.on('drop', function(e) {
+        e.preventDefault();
+        $(this).removeClass('dragover');
+        const files = e.originalEvent.dataTransfer.files;
+        if (files.length > 0) uploadFile(files[0]);
+    });
+
+    // Target column selection
+    $('#targetCol').on('change', function() {
+        target = $(this).val();   // 🔥 Save selected target globally
+        updateFeatureCheckboxes(target);
+        updateTrainButton();
+    });
+
+    // Feature selection
+    $(document).on('change', 'input[name="features"]', function() {
+        updateTrainButton();
+    });
+
+    // Train model
+    $('#trainBtn').on('click', function() {
+        trainModel();
+    });
+
+    // Make prediction
+    $('#predictBtn').on('click', function() {
+        makePrediction();
+    });
+
+});
+
+
+function showLoading() {
+    $('#loading').show();
+}
+
+function hideLoading() {
+    $('#loading').hide();
+}
+
+function showError(elementId, message) {
+    $(elementId).html(message).removeClass('hidden');
+    setTimeout(() => $(elementId).addClass('hidden'), 5000);
+}
+
+function showInfo(elementId, message) {
+    $(elementId).html(message).removeClass('hidden');
+}
+
+function hideMessages() {
+    $('.error, .info').addClass('hidden');
+}
+
+
+function uploadFile(file) {
+    hideMessages();
+    showLoading();
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    $.ajax({
+        url: '/upload_file',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            hideLoading();
+            if (response.error) {
+                showError('#uploadError', response.error);
             } else {
-                checkboxItem.show();
+                columnInfo = response.column_info;
+                populateColumns(response.columns);
+                showInfo('#uploadInfo', response.message);
+                $('#step2').removeClass('hidden').addClass('active');
             }
-        });
-    }
-    
-    function updateTrainButton() {
-        const target = $('#targetCol').val();
-        const features = $('input[name="features"]:checked').length;
-        
-        if (target && features > 0) {
-            $('#trainBtn').prop('disabled', false);
+        },
+        error: function(xhr) {
+            hideLoading();
+            const error = xhr.responseJSON ? xhr.responseJSON.error : 'Upload failed';
+            showError('#uploadError', error);
+        }
+    });
+}
+
+
+function populateColumns(columns) {
+    $('#targetCol').empty().append('<option value="">Select target column...</option>');
+
+    columns.forEach(function(col) {
+        const info = columnInfo[col];
+        if (info.is_numerical && !info.is_date) {
+            $('#targetCol').append(`<option value="${col}">${col} (Numerical)</option>`);
+        }
+    });
+
+    $('#featureCols').empty();
+    columns.forEach(function(col) {
+        const info = columnInfo[col];
+
+        if (info.is_date) return;
+
+        const checkboxItem = $(`
+            <div class="checkbox-item">
+                <input type="checkbox" name="features" value="${col}" id="feature_${col}">
+                <label for="feature_${col}">${col}</label>
+            </div>
+        `);
+
+        const typeIndicator = info.is_numerical ? '🔢 Numerical' : '📝 Categorical';
+        checkboxItem.append(`<div class="column-info">${typeIndicator}</div>`);
+
+        if (info.null_count > 0) {
+            checkboxItem.append(`<div class="column-info">⚠️ ${info.null_count} missing values</div>`);
+        }
+
+        if (info.sample_values.length > 0) {
+            const sampleText = info.sample_values.slice(0, 2).join(', ');
+            checkboxItem.append(`<div class="column-info">📊 Sample: ${sampleText}</div>`);
+        }
+
+        $('#featureCols').append(checkboxItem);
+    });
+}
+
+
+function updateFeatureCheckboxes(selectedTarget) {
+    $('input[name="features"]').each(function() {
+        const featureName = $(this).val();
+        const checkboxItem = $(this).closest('.checkbox-item');
+
+        if (featureName === selectedTarget) {
+            checkboxItem.hide();
+            $(this).prop('checked', false);
         } else {
-            $('#trainBtn').prop('disabled', true);
+            checkboxItem.show();
         }
-    }
-    
-    function trainModel() {
-        const target = $('#targetCol').val();
-        const features = [];
-        $('input[name="features"]:checked').each(function() {
-            features.push($(this).val());
-        });
-        
-        if (!target || features.length === 0) {
-            showError('#trainError', 'Please select both target and feature columns.');
-            return;
-        }
-        
-        hideMessages();
-        showLoading();
+    });
+}
 
-            $.ajax({
-            url: '/train',
-            type: 'POST',
-            data: {
-                target: target,
-                'features[]': features
-            },
-            success: function(response) {
-                hideLoading();
-                if (response.error) {
-                    showError('#trainError', response.error);
-                } else {
-                    const scoreInfo = `📊 R² Score: ${response.r2_score}`;
-                    const sampleInfo = `📈 Trained on ${response.sample_count} samples with ${response.feature_count} features`;
-                    showInfo('#trainInfo', `${response.message}<br>🤖 Using Linear Regression<br>${scoreInfo}<br>${sampleInfo}`);
-                    generatePredictionForm(features);
-                    $('#step3').removeClass('hidden').addClass('active');
-                    $('#step2').removeClass('active');
-                }
-            },
-            error: function(xhr) {
-                hideLoading();
-                const error = xhr.responseJSON ? xhr.responseJSON.error : 'Training failed';
-                showError('#trainError', error);
-            }
-        });
-    }
-    
-    function generatePredictionForm(features) {
-        const form = $('#predictionForm');
-        form.empty();
-        
-        features.forEach(function(feature) {
-            const info = columnInfo[feature];
-            const formGroup = $(`
-                <div class="form-group">
-                    <label for="input_${feature}">${feature}</label>
-                </div>
-            `);
-            
-            if (!info.is_numerical) {
-                // Create dropdown for categorical features with ALL unique values
-                const select = $(`<select id="input_${feature}" name="${feature}" required></select>`);
-                select.append('<option value="">Select value...</option>');
-                
-                // Get ALL unique values from the data, not just sample values
-                if (info.unique_values && info.unique_values.length > 0) {
-                    info.unique_values.forEach(function(value) {
-                        select.append(`<option value="${value}">${value}</option>`);
-                    });
-                } else {
-                    // Fallback to sample values if unique_values not available
-                    const uniqueValues = [...new Set(info.sample_values)];
-                    uniqueValues.forEach(function(value) {
-                        select.append(`<option value="${value}">${value}</option>`);
-                    });
-                }
-                
-                formGroup.append(select);
-                formGroup.append(`<div class="column-info">📝 Categorical - Select from ${info.unique_count} unique values</div>`);
-            } else {
-                // Create number input for numerical features
-                const input = $(`<input type="number" id="input_${feature}" name="${feature}" step="any" required>`);
-                formGroup.append(input);
-                formGroup.append(`<div class="column-info">🔢 Numerical - Enter a number</div>`);
-            }
-            
-            if (info.null_count > 0) {
-                formGroup.append(`<div class="column-info">⚠️ This column has ${info.null_count} missing values</div>`);
-            }
-            
-            form.append(formGroup);
-        });
-    }
-    
-    function makePrediction() {
-        const inputData = {};
-        let isValid = true;
-        
-        $('#predictionForm input, #predictionForm select').each(function() {
-            const name = $(this).attr('name');
-            const value = $(this).val();
-            
-            if (!value) {
-                isValid = false;
-                $(this).css('border-color', '#ff416c');
-            } else {
-                $(this).css('border-color', '#ddd');
-                inputData[name] = value;
-            }
-        });
-        
-        if (!isValid) {
-            showError('#predictError', 'Please fill in all required fields.');
-            return;
-        }
-        
-        hideMessages();
-        showLoading();
 
-            $.ajax({
-            url: '/predict',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(inputData),
-            success: function(response) {
-                hideLoading();
-                if (response.error) {
-                    showError('#predictError', response.error);
-                } else {
-                    $('#result').html(`
-                        <div style="font-size: 1.5em; margin-bottom: 10px;">🎯 Prediction Result</div>
-                        <div style="font-size: 2em; font-weight: bold;">${response.prediction}</div>
-                        <div style="font-size: 0.9em; margin-top: 10px; opacity: 0.8;">
-                            🤖 Linear Regression Model<br>
-                            ${response.message}
-                        </div>
-                    `).removeClass('hidden');
-                }
-            },
-            error: function(xhr) {
-                hideLoading();
-                const error = xhr.responseJSON ? xhr.responseJSON.error : 'Prediction failed';
-                showError('#predictError', error);
-            }
-        });
+function updateTrainButton() {
+    const target = $('#targetCol').val();
+    const features = $('input[name="features"]:checked').length;
+
+    $('#trainBtn').prop('disabled', !(target && features > 0));
+}
+
+
+function trainModel() {
+    const target = $('#targetCol').val();
+    const features = [];
+
+    $('input[name="features"]:checked').each(function() {
+        features.push($(this).val());
+    });
+
+    if (!target || features.length === 0) {
+        showError('#trainError', 'Please select both target and feature columns.');
+        return;
     }
+
+    hideMessages();
+    showLoading();
+
+    $.ajax({
+        url: '/train',
+        type: 'POST',
+        data: {
+            target: target,
+            'features[]': features
+        },
+        success: function(response) {
+            hideLoading();
+            if (response.error) {
+                showError('#trainError', response.error);
+            } else {
+                showInfo('#trainInfo', `
+                    ${response.message}<br>
+                    🤖 Using Linear Regression<br>
+                    📊 R² Score: ${response.r2_score}<br>
+                    📈 Trained on ${response.sample_count} samples with ${response.feature_count} features
+                `);
+
+                generatePredictionForm(features);
+                $('#step3').removeClass('hidden').addClass('active');
+            }
+        },
+        error: function(xhr) {
+            hideLoading();
+            const error = xhr.responseJSON ? xhr.responseJSON.error : 'Training failed';
+            showError('#trainError', error);
+        }
+    });
+}
+
+
+
+function generatePredictionForm(features) {
+    const form = $('#predictionForm');
+    form.empty();
+
+    features.forEach(function(feature) {
+        const info = columnInfo[feature];
+
+        const formGroup = $(`
+            <div class="form-group">
+                <label for="input_${feature}">${feature}</label>
+            </div>
+        `);
+
+        if (!info.is_numerical) {
+            const select = $(`<select id="input_${feature}" name="${feature}" required></select>`);
+            select.append('<option value="">Select value...</option>');
+
+            if (info.unique_values && info.unique_values.length > 0) {
+                info.unique_values.forEach(v => {
+                    select.append(`<option value="${v}">${v}</option>`);
+                });
+            }
+
+            formGroup.append(select);
+            formGroup.append(`<div class="column-info">📝 Categorical - Select from ${info.unique_count} values</div>`);
+
+        } else {
+            const input = $(`<input type="number" id="input_${feature}" name="${feature}" step="any" required>`);
+            formGroup.append(input);
+            formGroup.append(`<div class="column-info">🔢 Numerical - Enter a number</div>`);
+        }
+
+        form.append(formGroup);
+    });
+}
+
+
+
+function makePrediction() {
+    const inputData = {};
+    let isValid = true;
+
+    $('#predictionForm input, #predictionForm select').each(function() {
+        const name = $(this).attr('name');
+        const value = $(this).val();
+
+        if (!value) {
+            isValid = false;
+            $(this).css('border-color', '#ff416c');
+        } else {
+            $(this).css('border-color', '#22d3ee');
+            inputData[name] = value;
+        }
+    });
+
+    if (!isValid) {
+        showError('#predictError', 'Please fill in all required fields.');
+        return;
+    }
+
+    hideMessages();
+    showLoading();
+
+    $.ajax({
+        url: '/predict',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(inputData),
+        success: function(response) {
+            hideLoading();
+
+            if (response.error) {
+                showError('#predictError', response.error);
+            } else {
+
+                // 🔥 Display target column + predicted value
+                $('#result').html(`
+                    <div style="font-size: 1.5em; margin-bottom: 10px;">Prediction Result</div>
+
+                    <div style="font-size: 1.2em; opacity: 0.8;">Predicted Column</div>
+                    <div style="font-size: 2em; font-weight: bold; color:#22d3ee;">
+                        ${target}
+                    </div>
+
+                    <div style="font-size: 1.2em; margin-top:10px; opacity: 0.8;">Predicted Value</div>
+                    <div style="font-size: 2.2em; font-weight: bold;">
+                        ${response.prediction}
+                    </div>
+
+                    <div style="font-size: 0.9em; margin-top: 10px; opacity: 0.7;">
+                        🤖 Linear Regression Model<br>
+                        ${response.message}
+                    </div>
+                `).removeClass('hidden');
+            }
+        },
+        error: function(xhr) {
+            hideLoading();
+            const error = xhr.responseJSON ? xhr.responseJSON.error : 'Prediction failed';
+            showError('#predictError', error);
+        }
+    });
+
+}
+
     </script>
 </body>
 </html>

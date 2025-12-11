@@ -19,6 +19,9 @@ from wtforms.validators import DataRequired, Email
 from flask_mail import Mail, Message
 import json
 
+import os
+
+
 india_tz = pytz.timezone("Asia/Kolkata")
 
 # Custom helpers
@@ -257,6 +260,7 @@ def contact():
 DATAFRAMES = {}
 model = None
 le_dict = {}
+target=None
 
 # -------------------- Dashboard --------------------
 @app.route("/")
@@ -319,7 +323,7 @@ def upload_file():
 
 @app.route("/train", methods=["POST"])
 def train_model():
-    global model, le_dict
+    global model, le_dict,target
     try:
         target = request.form.get("target")
         features = request.form.getlist("features[]")
@@ -363,6 +367,8 @@ def train_model():
 
 @app.route("/predict", methods=["POST"])
 def predict():
+    global model, le_dict,target
+
     try:
         if model is None:
             return jsonify(error="No model trained."), 400
@@ -379,6 +385,7 @@ def predict():
         prediction = model.predict(df_input[model.feature_names_in_])[0]
 
         return jsonify({
+            "target": target,
             "prediction": round(float(prediction), 4),
             "message": "Prediction successful!"
         })
