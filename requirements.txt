@@ -4,7 +4,6 @@ Flask-PyMongo
 Flask-WTF
 WTForms
 Werkzeug
-bson
 dnspython
 email-validator
 gunicorn
