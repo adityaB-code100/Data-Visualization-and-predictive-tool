@@ -11,6 +11,8 @@ gunicorn
 numpy
 pandas
 plotly
+kaleido
 pymongo
 pytz
 scikit-learn
+openpyxl

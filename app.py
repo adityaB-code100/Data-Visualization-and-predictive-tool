@@ -28,10 +28,20 @@ india_tz = pytz.timezone("Asia/Kolkata")
 from help_fun import load_csv_to_dataframe, clean_dataframe, infer_column_kinds, build_figure
 app = Flask(__name__)
 
-with open("config.json") as f:
-    config = json.load(f)
+# Load configuration from environment variables or config.json
+config = {}
+try:
+    with open("config.json") as f:
+        config = json.load(f)
+except FileNotFoundError:
+    # If config.json doesn't exist, use environment variables
+    pass
+
 # -------------------- MongoDB Setup --------------------
-uri=config["MONGO_URI1"]
+# Use environment variable if available, otherwise fallback to config.json
+uri = os.getenv("MONGO_URI", config.get("MONGO_URI1", config.get("MONGO_URI", "")))
+if not uri:
+    raise ValueError("MONGO_URI environment variable or MONGO_URI1/MONGO_URI in config.json is required")
 app.config["MONGO_URI"] = uri
 
 mongo = PyMongo(app)
@@ -41,18 +51,18 @@ charts_collection = db["charts"]
 contacts_collection = db["contacts"]
 
 # -------------------- Flask-Mail Setup --------------------
-app.secret_key = config.get("SECRET_KEY", "dev-secret-key")
+app.secret_key = os.getenv("SECRET_KEY", config.get("SECRET_KEY", "dev-secret-key-change-in-production"))
 
 
 
-# Flask-Mail configuration for Gmail SSL
+# Flask-Mail configuration for Gmail SSL (use environment variables with fallback to config.json)
 app.config.update(
-    MAIL_SERVER=config['mail_server'],
-    MAIL_PORT=config['mail_port'],
-    MAIL_USE_TLS=config['mail_use_tls'],
-    MAIL_USE_SSL=config['mail_use_ssl'],
-    MAIL_USERNAME=config['gmail_user'],
-    MAIL_PASSWORD=config['gmail_password'],
+    MAIL_SERVER=os.getenv("MAIL_SERVER", config.get("mail_server", "smtp.gmail.com")),
+    MAIL_PORT=int(os.getenv("MAIL_PORT", config.get("mail_port", 465))),
+    MAIL_USE_TLS=os.getenv("MAIL_USE_TLS", str(config.get("mail_use_tls", False))).lower() == "true",
+    MAIL_USE_SSL=os.getenv("MAIL_USE_SSL", str(config.get("mail_use_ssl", True))).lower() == "true",
+    MAIL_USERNAME=os.getenv("MAIL_USERNAME", config.get("gmail_user", "")),
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD", config.get("gmail_password", "")),
 )
 mail = Mail(app)
 
@@ -230,10 +240,11 @@ def contact():
             contacts_collection.insert_one(contact_entry)
 
             # Send email
+            admin_email = os.getenv("ADMIN_EMAIL", config.get("ADMIN_EMAIL", ""))
             msg = Message(
                 subject=f"New Contact: {request.form['subject']}",
-                sender=config['gmail_user'],
-                recipients=[config['ADMIN_EMAIL']],
+                sender=os.getenv("MAIL_USERNAME", config.get("gmail_user", "")),
+                recipients=[admin_email],
                 body=f"""
                     Name: {request.form['name']}
                     Email: {request.form['email']}
@@ -525,4 +536,6 @@ def internal_server_error(e):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.getenv("PORT", 5000))
+    debug = os.getenv("FLASK_ENV") == "development"
+    app.run(host="0.0.0.0", port=port, debug=debug)
