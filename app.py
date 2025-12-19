@@ -21,6 +21,70 @@ import json
 
 import os
 
+# Initialize kaleido if available
+def init_kaleido():
+    """Initialize kaleido for image export"""
+    try:
+        import kaleido
+        # Ensure kaleido scope is available
+        import plotly.io as pio
+        if hasattr(pio, 'kaleido'):
+            # Test initialization
+            pio.kaleido.scope.default_format = "png"
+            print("Kaleido initialized successfully")
+            return True
+    except Exception as e:
+        print(f"Kaleido initialization warning: {e}")
+    return False
+
+# Initialize on import
+KALEIDO_AVAILABLE = init_kaleido()
+
+# Helper function for generating chart images
+def generate_chart_image(fig):
+    """
+    Generate PNG image bytes from a plotly figure using kaleido.
+    Returns bytes of the PNG image.
+    """
+    if not KALEIDO_AVAILABLE:
+        raise Exception("Kaleido is not available. Image generation requires kaleido to be properly installed.")
+    
+    # Try multiple methods
+    errors = []
+    
+    # Method 1: Try to_image (preferred)
+    try:
+        img_bytes = fig.to_image(format="png", engine="kaleido", width=1200, height=800)
+        if img_bytes and len(img_bytes) > 0:
+            return img_bytes
+    except Exception as e1:
+        errors.append(f"to_image failed: {str(e1)}")
+    
+    # Method 2: Try write_image with BytesIO
+    try:
+        buf = io.BytesIO()
+        fig.write_image(buf, format="png", engine="kaleido", width=1200, height=800)
+        buf.seek(0)
+        img_bytes = buf.read()
+        if img_bytes and len(img_bytes) > 0:
+            return img_bytes
+    except Exception as e2:
+        errors.append(f"write_image failed: {str(e2)}")
+    
+    # Method 3: Try without explicit engine
+    try:
+        buf = io.BytesIO()
+        fig.write_image(buf, format="png", width=1200, height=800)
+        buf.seek(0)
+        img_bytes = buf.read()
+        if img_bytes and len(img_bytes) > 0:
+            return img_bytes
+    except Exception as e3:
+        errors.append(f"write_image (no engine) failed: {str(e3)}")
+    
+    # All methods failed
+    error_msg = "Failed to generate image. Errors: " + "; ".join(errors)
+    raise Exception(error_msg)
 
 india_tz = pytz.timezone("Asia/Kolkata")
 
@@ -455,18 +519,31 @@ def download_png(upload_id):
         flash("Upload not found.")
         return redirect(url_for("index"))
 
-    fig = build_figure(
-        df,
-        request.form.get("chart") or "line",
-        request.form.get("x") or None,
-        request.form.get("y") or None,
-        request.form.get("title") or "",
-    )
-    buf = io.BytesIO()
-    fig.write_image(buf, format="png")
-    buf.seek(0)
-    filename = f"chart_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.png"
-    return send_file(buf, mimetype="image/png", as_attachment=True, download_name=filename)
+    try:
+        fig = build_figure(
+            df,
+            request.form.get("chart") or "line",
+            request.form.get("x") or None,
+            request.form.get("y") or None,
+            request.form.get("title") or "",
+        )
+        
+        # Generate PNG image using helper function
+        try:
+            img_bytes = generate_chart_image(fig)
+            buf = io.BytesIO(img_bytes)
+            buf.seek(0)
+            filename = f"chart_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.png"
+            return send_file(buf, mimetype="image/png", as_attachment=True, download_name=filename)
+        except Exception as img_error:
+            # Log the error for debugging
+            print(f"Image generation error: {str(img_error)}")
+            flash(f"Failed to download chart: {str(img_error)}. Please check server logs for details.")
+            return redirect(url_for("configure", upload_id=upload_id))
+    except Exception as e:
+        print(f"Download chart error: {str(e)}")
+        flash(f"Failed to download chart: {str(e)}")
+        return redirect(url_for("configure", upload_id=upload_id))
 
 @app.route("/save_chart/<upload_id>", methods=["POST"])
 @login_required
@@ -487,26 +564,33 @@ def save_chart(upload_id):
 
     try:
         fig = build_figure(df, chart_type, x_col, y_col,  title)
-        buf = io.BytesIO()
-        fig.write_image(buf, format="png")
-        buf.seek(0)
-        img_base64 = base64.b64encode(buf.read()).decode("utf-8")
+        
+        # Generate PNG image using helper function
+        try:
+            img_bytes = generate_chart_image(fig)
+            img_base64 = base64.b64encode(img_bytes).decode("utf-8")
 
-        chart_obj = {"name": title, "chart_type": chart_type, "x": x_col, "y": y_col, 
-                      "image_base64": img_base64, "created_at":  datetime.now(india_tz).strftime("%Y-%m-%d %H:%M:%S")}
+            chart_obj = {"name": title, "chart_type": chart_type, "x": x_col, "y": y_col, 
+                          "image_base64": img_base64, "created_at":  datetime.now(india_tz).strftime("%Y-%m-%d %H:%M:%S")}
 
-        user_chart_doc = charts_collection.find_one({"email": user_email})
-        if user_chart_doc:
-            charts = user_chart_doc.get("charts", {})
-            chart_key = f"chart_{len(charts)+1}"
-            charts[chart_key] = chart_obj
-            charts_collection.update_one({"email": user_email}, {"$set": {"charts": charts}})
-        else:
-            charts_collection.insert_one({"email": user_email, "charts": {"chart_1": chart_obj}})
+            user_chart_doc = charts_collection.find_one({"email": user_email})
+            if user_chart_doc:
+                charts = user_chart_doc.get("charts", {})
+                chart_key = f"chart_{len(charts)+1}"
+                charts[chart_key] = chart_obj
+                charts_collection.update_one({"email": user_email}, {"$set": {"charts": charts}})
+            else:
+                charts_collection.insert_one({"email": user_email, "charts": {"chart_1": chart_obj}})
 
-        flash(f"Chart '{title}' saved successfully!")
-        return redirect(url_for("configure", upload_id=upload_id))
+            flash(f"Chart '{title}' saved successfully!")
+            return redirect(url_for("configure", upload_id=upload_id))
+        except Exception as img_error:
+            # Log the error for debugging
+            print(f"Image generation error in save_chart: {str(img_error)}")
+            flash(f"Failed to save chart: {str(img_error)}. Please check server logs for details.")
+            return redirect(url_for("configure", upload_id=upload_id))
     except Exception as e:
+        print(f"Save chart error: {str(e)}")
         flash(f"Failed to save chart: {e}")
         return redirect(url_for("configure", upload_id=upload_id))
     
