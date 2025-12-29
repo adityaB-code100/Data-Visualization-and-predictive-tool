@@ -109,34 +109,40 @@
     </button>
   </form>
 
-  <!-- Chart Preview -->
-  {% if fig_html %}
-    <section class="mt-8 p-6 bg-gray-800 rounded-xl shadow-lg text-gray-200 fade-in">
-      {{ fig_html | safe }}
+ <!-- Chart Preview -->
+{% if fig_html %}
+<section class="mt-8 p-6 bg-gray-800 rounded-xl shadow-lg text-gray-200 fade-in">
 
-      <div class="mt-4 flex flex-wrap gap-4 ">
-        <form action="{{ url_for('download_png', upload_id=upload_id) }}" method="post">
-          <input type="hidden" name="chart" value="{{ selected.chart }}">
-          <input type="hidden" name="x" value="{{ selected.x or '' }}">
-          <input type="hidden" name="y" value="{{ selected.y or '' }}">
-          <input type="hidden" name="title" value="{{ selected.title or '' }}">
-          <button type="submit" class="px-4 py-2 rounded-lg bg-cyan-400 text-gray-900 font-semibold glow">
-            <i class="fas fa-download mr-1"></i> Download 
-          </button>
-        </form>
+  <!-- 👇 WRAP chart -->
+  <div id="chart-container">
+    {{ fig_html | safe }}
+  </div>
 
-        <form action="{{ url_for('save_chart', upload_id=upload_id) }}" method="post">
-          <input type="hidden" name="chart" value="{{ selected.chart }}">
-          <input type="hidden" name="x" value="{{ selected.x or '' }}">
-          <input type="hidden" name="y" value="{{ selected.y or '' }}">
-          <input type="hidden" name="title" value="{{ selected.title or '' }}">
-          <button type="submit" class="px-4 py-2 rounded-lg bg-cyan-400 text-gray-900 font-semibold glow">
-            <i class="fas fa-save mr-1"></i> Save Chart
-          </button>
-        </form>
-      </div>
-    </section>
-  {% endif %}
+  <div class="mt-4 flex flex-wrap gap-4">
+    
+    <!-- ✅ Download as PNG (HTML → PNG) -->
+    <button
+      onclick="downloadChartPNG()"
+      class="px-4 py-2 rounded-lg bg-cyan-400 text-gray-900 font-semibold glow"
+    >
+      <i class="fas fa-download mr-1"></i> Download
+    </button>
+
+    <!-- Save chart (server-side, unchanged) -->
+    <form action="{{ url_for('save_chart', upload_id=upload_id) }}" method="post">
+      <input type="hidden" name="chart" value="{{ selected.chart }}">
+      <input type="hidden" name="x" value="{{ selected.x or '' }}">
+      <input type="hidden" name="y" value="{{ selected.y or '' }}">
+      <input type="hidden" name="title" value="{{ selected.title or '' }}">
+      <button type="submit" class="px-4 py-2 rounded-lg bg-cyan-400 text-gray-900 font-semibold glow">
+        <i class="fas fa-save mr-1"></i> Save Chart
+      </button>
+    </form>
+
+  </div>
+</section>
+{% endif %}
+
 
   <!-- Back link -->
   <p class="mt-6 text-center text-cyan-400 hover:text-cyan-200 transition">
@@ -187,6 +193,26 @@ chartForm.addEventListener('submit', e=>{
   submitButton.classList.add('loading');
   submitButton.disabled = true;
 });
+</script>
+
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<script>
+function downloadChartPNG() {
+  const chart = document.getElementById("chart-container");
+
+  html2canvas(chart, {
+    backgroundColor: "#1f2937", // matches gray-800
+    scale: 2  // higher quality
+  }).then(canvas => {
+    const link = document.createElement("a");
+    link.download = "chart.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+}
+
 </script>
 </body>
 </html>

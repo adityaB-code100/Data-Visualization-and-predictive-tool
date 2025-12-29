@@ -4,14 +4,13 @@ Flask-PyMongo
 Flask-WTF
 WTForms
 Werkzeug
+bson
 dnspython
 email-validator
 gunicorn
 numpy
 pandas
-plotly>=5.0.0
-kaleido>=0.2.1
+plotly
 pymongo
 pytz
 scikit-learn
-openpyxl
