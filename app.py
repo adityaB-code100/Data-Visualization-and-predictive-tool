@@ -378,7 +378,7 @@ def train_model():
         # Metrics
         r2 = model.score(X_test, y_test)
         mae = mean_absolute_error(y_test, y_pred)
-        rmse = mean_squared_error(y_test, y_pred, squared=False)
+        rmse = np.sqrt(mean_squared_error(y_test, y_pred))
         mape = np.mean(np.abs((y_test - y_pred) / y_test)) * 100
 
         # Store metrics globally for prediction confidence
