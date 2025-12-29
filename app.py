@@ -436,27 +436,6 @@ def configure(upload_id):
     return render_template("configure.html", upload_id=upload_id, columns=list(df.columns),
                            kinds=kinds, chart_types=chart_types, fig_html=fig_html, selected=selected)
 
-@app.route("/download/<upload_id>", methods=["POST"])
-@login_required
-def download_png(upload_id):
-    df = DATAFRAMES.get(upload_id)
-    if df is None:
-        flash("Upload not found.")
-        return redirect(url_for("index"))
-
-    fig = build_figure(
-        df,
-        request.form.get("chart") or "line",
-        request.form.get("x") or None,
-        request.form.get("y") or None,
-        request.form.get("title") or request.form.get("chart") ,
-    )
-    buf = io.BytesIO()
-    fig.write_image(buf, format="png")
-    buf.seek(0)
-    filename = f"chart_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.png"
-    return send_file(buf, mimetype="image/png", as_attachment=True, download_name=filename)
-
 @app.route("/save_chart/<upload_id>", methods=["POST"])
 @login_required
 def save_chart(upload_id):
