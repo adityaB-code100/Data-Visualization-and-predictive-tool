@@ -1,4 +1,3 @@
-
 from flask import Flask, abort, render_template, request, jsonify, redirect, url_for, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_pymongo import PyMongo
@@ -16,6 +15,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Email
 from flask_mail import Mail, Message
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 import os
 
@@ -325,102 +326,136 @@ def upload_file():
 
 
 # Route to train machine learning model - processes uploaded data and creates predictive model
+
 @app.route("/train", methods=["POST"])
 def train_model():
-    # Update global variables to store the trained model and label encoders
-    global model, le_dict,target
+    global model, le_dict, target, metrics
+
     try:
-        # Get target column and feature columns from form data
         target = request.form.get("target")
         features = request.form.getlist("features[]")
+
         if not target or not features:
             return jsonify(error="Select target and features."), 400
         if target in features:
             return jsonify(error="Target cannot be in features."), 400
-
-        # Verify that data has been uploaded
         if "latest" not in DATAFRAMES:
             return jsonify(error="No data uploaded."), 400
 
-        # Create a copy of the dataframe to avoid modifying the original
         df = DATAFRAMES["latest"].copy()
-        # Initialize label encoder dictionary
         le_dict = {}
 
-        # Handle missing values in features and target columns
+        # Handle missing values
         for col in features + [target]:
             if df[col].dtype == "object":
-                # Fill categorical columns with mode or 'Unknown'
-                df[col] = df[col].fillna(df[col].mode()[0] if not df[col].mode().empty else "Unknown")
+                df[col] = df[col].fillna(
+                    df[col].mode()[0] if not df[col].mode().empty else "Unknown"
+                )
             else:
-                # Fill numerical columns with median
                 df[col] = df[col].fillna(df[col].median())
 
-        # Encode categorical variables using LabelEncoder
+        # Encode categorical columns
         for col in features + [target]:
             if df[col].dtype == "object":
                 le = LabelEncoder()
                 df[col] = le.fit_transform(df[col].astype(str))
-                # Store encoder for later use in prediction
                 le_dict[col] = le
 
-        # Prepare feature matrix (X) and target vector (y)
         X = df[features]
         y = df[target]
-        # Train Linear Regression model
-        model = LinearRegression().fit(X, y)
-        # Calculate R-squared score to measure model performance
-        r2_score = model.score(X, y)
 
-        # Return training results and model performance metrics
+        # ✅ Train-test split (IMPORTANT)
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=42
+        )
+
+        model = LinearRegression()
+        model.fit(X_train, y_train)
+
+        # Predictions
+        y_pred = model.predict(X_test)
+
+        # Metrics
+        r2 = model.score(X_test, y_test)
+        mae = mean_absolute_error(y_test, y_pred)
+        rmse = mean_squared_error(y_test, y_pred, squared=False)
+        mape = np.mean(np.abs((y_test - y_pred) / y_test)) * 100
+
+        # Store metrics globally for prediction confidence
+        metrics = {
+            "r2": round(r2, 4),
+            "mae": round(mae, 2),
+            "rmse": round(rmse, 2),
+            "mape": round(mape, 2)
+        }
+
         return jsonify({
             "message": "Model trained successfully!",
-            "r2_score": round(r2_score, 4),
+            "model": "Linear Regression",
+            "metrics": metrics,
             "sample_count": len(df),
-            "feature_count": len(features)
+            "feature_count": len(features),
+            "confidence": (
+                "High" if r2 > 0.8 else
+                "Medium" if r2 > 0.6 else
+                "Low"
+            )
         })
+
     except Exception as e:
-        # Return error message if training fails
         return jsonify(error=str(e)), 500
 
 
-# Route to make predictions using the trained model
+
 @app.route("/predict", methods=["POST"])
 def predict():
-    # Access global variables containing the trained model and encoders
-    global model, le_dict,target
+    global model, le_dict, target, metrics
 
     try:
-        # Verify that a model has been trained
         if model is None:
             return jsonify(error="No model trained."), 400
 
-        # Get input data from request JSON
         data = request.get_json()
-        # Convert input data to DataFrame for prediction
         df_input = pd.DataFrame([data])
 
-        # Apply label encoding to categorical columns using stored encoders
+        # Encode categorical columns
         for col in df_input.columns:
             if col in le_dict:
                 le = le_dict[col]
-                # Handle unseen categories by using the first class
-                df_input[col] = df_input[col].astype(str).apply(lambda x: x if x in le.classes_ else le.classes_[0])
-                # Transform the categorical values using the encoder
+                df_input[col] = df_input[col].astype(str).apply(
+                    lambda x: x if x in le.classes_ else le.classes_[0]
+                )
                 df_input[col] = le.transform(df_input[col])
 
-        # Make prediction using the trained model
-        prediction = model.predict(df_input[model.feature_names_in_])[0]
+        # Prediction
+        prediction = float(model.predict(df_input[model.feature_names_in_])[0])
 
-        # Return prediction result
+        # Use RMSE for range
+        rmse = metrics["rmse"]
+        lower = prediction - rmse
+        upper = prediction + rmse
+
+        # Confidence from R²
+        r2 = metrics["r2"]
+        confidence = (
+            "High" if r2 > 0.8 else
+            "Medium" if r2 > 0.6 else
+            "Low"
+        )
+
         return jsonify({
             "target": target,
-            "prediction": round(float(prediction), 4),
+            "prediction": round(prediction, 2),
+            "lower_bound": round(lower, 2),
+            "upper_bound": round(upper, 2),
+            "rmse": round(rmse, 2),
+            "confidence": confidence,
             "message": "Prediction successful!"
         })
+
     except Exception as e:
-        # Return error message if prediction fails
         return jsonify(error=str(e)), 500
+
 
 # -------------------- Chart Visualization --------------------
 # Route to handle CSV file upload for chart creation
@@ -469,7 +504,7 @@ def configure(upload_id):
         chart_type = request.form.get("chart") or "line"
         x_col = request.form.get("x") or None
         y_col = request.form.get("y") or None
-        title = request.form.get("title") or f"{chart_type} Chart"
+        title = request.form.get("title") or ""
 
         selected.update({"chart": chart_type, "x": x_col, "y": y_col, "title": title})
 
@@ -484,6 +519,8 @@ def configure(upload_id):
     # Render chart configuration template
     return render_template("configure.html", upload_id=upload_id, columns=list(df.columns),
                            kinds=kinds, chart_types=chart_types, fig_html=fig_html, selected=selected)
+
+
 
 # Route to save a configured chart to the user's account
 @app.route("/save_chart/<upload_id>", methods=["POST"])

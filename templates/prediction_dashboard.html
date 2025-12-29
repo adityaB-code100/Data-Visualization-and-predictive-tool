@@ -409,11 +409,16 @@ function trainModel() {
                 showError('#trainError', response.error);
             } else {
                 showInfo('#trainInfo', `
-                    ${response.message}<br>
-                    🤖 Using Linear Regression<br>
-                    📊 R² Score: ${response.r2_score}<br>
-                    📈 Trained on ${response.sample_count} samples with ${response.feature_count} features
-                `);
+    <b>${response.message}</b><br><br>
+
+    🤖 <b>Model:</b> Linear Regression<br>
+    📊 <b>Confidence:</b> ${response.confidence}<br>
+    📈 <b>R² Score:</b> ${response.metrics.r2}<br>
+    📉 <b>Avg Error:</b> ±${response.metrics.rmse}<br>
+    📌 <b>MAPE:</b> ${response.metrics.mape}%<br><br>
+
+    🧪 Trained on ${response.sample_count} samples using ${response.feature_count} features
+`);
 
                 generatePredictionForm(features);
                 $('#step3').removeClass('hidden').addClass('active');
@@ -515,8 +520,19 @@ function makePrediction() {
 
                     <div style="font-size: 1.2em; margin-top:10px; opacity: 0.8;">Predicted Value</div>
                     <div style="font-size: 2.2em; font-weight: bold;">
-                        ${response.prediction}
-                    </div>
+                     ${response.prediction}
+                      </div>
+
+                      <div style="margin-top:10px; font-size:1em; opacity:0.85;">
+                          📊 <b>Expected Range:</b><br>
+                           ${response.lower_bound} –  ${response.upper_bound}
+                      </div>
+
+                      <div style="margin-top:10px; font-size:0.95em; opacity:0.8;">
+                          🎯 <b>Confidence:</b> ${response.confidence}<br>
+                          📉 <b>Typical Error:</b> ±${response.rmse}
+                      </div>
+
 
                     <div style="font-size: 0.9em; margin-top: 10px; opacity: 0.7;">
                         🤖 Linear Regression Model<br>
