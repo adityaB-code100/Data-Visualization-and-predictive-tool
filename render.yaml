@@ -3,8 +3,10 @@ services:
     name: data-visualization-app
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    buildCommand: |
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
@@ -15,11 +17,11 @@ services:
       - key: MAIL_SERVER
         value: smtp.gmail.com
       - key: MAIL_PORT
-        value: 465
+        value: 587
       - key: MAIL_USE_TLS
-        value: false
-      - key: MAIL_USE_SSL
         value: true
+      - key: MAIL_USE_SSL
+        value: false
       - key: MAIL_USERNAME
         sync: false
       - key: MAIL_PASSWORD
