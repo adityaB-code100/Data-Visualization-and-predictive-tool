@@ -91,6 +91,7 @@
         {% endif %}
     </div>
   </nav>
+  
 
   <main id="viewport" class="relative">
 
@@ -343,50 +344,67 @@
 </section>
 
 
-    <!-- Section 5: About Us -->
-    <section id="about" class="relative flex items-center bg-gradient-to-b from-[#081026] to-[#051018]">
-      <div class="container mx-auto px-6 lg:px-20 py-16">
-        <div class="max-w-4xl mx-auto text-center">
-          <h2 class="text-3xl font-bold">About Us</h2>
-          <p class="mt-4 text-gray-300">We are a small team of engineers and designers building tools to make analytics accessible to organizations of any size.</p>
-         <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
-  
-  <!-- Member 1 -->
-  <div class="text-center">
-    <div class="w-28 h-28 mx-auto rounded-full overflow-hidden bg-white/10 border border-gray-700 shadow-lg">
-      <img 
-        src="{{ url_for('static', filename='images/aditya.jpg') }}" 
-        alt="Aditya Bandewar"
-        class="w-full h-full object-cover"
-        onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-2xl text-gray-300\'>AD</div>';"
-      >
-    </div>
-    <h4 class="mt-4 font-semibold text-gray-100">Aditya Bandewar</h4>
-    <p class="text-sm text-gray-400">Engineering Student</p>
-  </div>
+ <!-- Section 5: About Me -->
+<section id="about" class="relative flex items-center bg-gradient-to-b from-[#081026] to-[#051018]">
+  <div class="container mx-auto px-6 lg:px-20 py-16">
+    <div class="max-w-4xl mx-auto text-center">
 
-  <!-- Member 2 -->
-  <div class="text-center">
-    <div class="w-28 h-28 mx-auto rounded-full overflow-hidden bg-white/10 border border-gray-700 shadow-lg">
-      <img 
-        src="{{ url_for('static', filename='images/pawan.png') }}" 
-        alt="Pawan Wadje"
-        class="w-full h-full object-cover"
-        onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-2xl text-gray-300\'>PW</div>';"
-      >
-    </div>
-    <h4 class="mt-4 font-semibold text-gray-100">Pawan Wadje</h4>
-    <p class="text-sm text-gray-400">Engineering Student</p>
-  </div>
+      <h2 class="text-3xl font-bold">About Me</h2>
 
-</div>
+      <p class="mt-4 text-gray-300">
+        I’m a passionate engineering student building data-driven and AI-powered tools to make analytics,
+        visualization, and prediction accessible and impactful.
+      </p>
 
-
-          <div class="mt-8 flex items-center justify-center gap-4">
-            <a href="/contact" class="px-5 py-3 rounded-lg bg-white/6">Contact us</a>
+      <!-- Profile Card -->
+      <div class="mt-10 flex justify-center">
+        <div class="text-center">
+          <div class="w-32 h-32 mx-auto rounded-full overflow-hidden bg-white/10 border border-gray-700 shadow-lg">
+            <img 
+              src="{{ url_for('static', filename='images/aditya.jpg') }}" 
+              alt="Aditya Bandewar"
+              class="w-full h-full object-cover"
+              onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-2xl text-gray-300\'>AB</div>';"
+            >
           </div>
+
+          <h4 class="mt-4 text-lg font-semibold text-gray-100">Aditya Bandewar</h4>
+
+          <!-- Social Links -->
+          <div class="mt-5 flex justify-center gap-5 text-gray-400">
+            <a href="https://www.linkedin.com/in/aditya-bandewar-393231326/" target="_blank" class="hover:text-brandPurple transition">
+              <i class="fab fa-linkedin fa-lg"></i>
+            </a>
+            <a href="https://github.com/adityaB-code100" target="_blank" class="hover:text-brandEmerald transition">
+              <i class="fab fa-github fa-lg"></i>
+            </a>
+            <a href="https://leetcode.com/u/adityabandewar206/" target="_blank" class="hover:text-brandAmber transition">
+              <i class="fas fa-code fa-lg"></i>
+            </a>
+            <a href="mailto:adityabandewar21@gmail.com" class="hover:text-brandCyan transition">
+              <i class="fas fa-envelope fa-lg"></i>
+            </a>
+          </div>
+        </div>
       </div>
-    </section>
+
+      <!-- Collaboration / Hiring Message -->
+      <p class="mt-8 text-gray-300 max-w-2xl mx-auto">
+         I’m actively looking for <span class="text-white font-semibold">collaboration opportunities, internships, and entry-level roles</span>.
+        If you’re building something interesting or looking for a motivated developer, let’s connect.
+      </p>
+
+      <!-- CTA -->
+      <div class="mt-8 flex items-center justify-center gap-4">
+        <a href="mailto:adityabandewar21@gmail.com" class="px-6 py-3 rounded-lg bg-white/10 hover:bg-white/20 transition">
+          Contact Me
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
     <!-- Section 6: FAQ -->
     <section id="faq" class="relative flex items-center bg-gradient-to-b from-[#021018] to-[#020814]">
@@ -398,7 +416,7 @@
           <div class="mt-8 space-y-4">
             <details class="bg-white/4 rounded-xl p-4">
               <summary class="cursor-pointer font-semibold">What file types are supported?</summary>
-              <div class="mt-2 text-gray-300">We support CSV, XLSX and JSON file formats. For best results include a header row and clean numeric columns.</div>
+              <div class="mt-2 text-gray-300">We support CSV, XLSX file formats. For best results include a header row and clean numeric columns.</div>
             </details>
 
             <details class="bg-white/4 rounded-xl p-4">
@@ -450,22 +468,32 @@
 
       <!-- Social / Contact -->
       <div class="md:w-1/3 text-center md:text-left">
-        <h4 class="font-semibold text-white mb-2">Follow Us</h4>
-        <div class="flex justify-center md:justify-start gap-4 mt-2">
-          <a href="#" class="text-gray-400 hover:text-brandCyan transition">
-            <i class="fab fa-twitter fa-lg"></i>
-          </a>
-          <a href="#" class="text-gray-400 hover:text-brandPurple transition">
-            <i class="fab fa-linkedin fa-lg"></i>
-          </a>
-          <a href="https://github.com/adityaB-code100/Data-Visualization-and-predictive-tool" class="text-gray-400 hover:text-brandEmerald transition">
-            <i class="fab fa-github fa-lg"></i>
-          </a>
-          <a href="/contact" class="text-gray-400 hover:text-brandAmber transition">
-            <i class="fas fa-envelope fa-lg"></i>
-          </a>
-        </div>
-      </div>
+  <h4 class="font-semibold text-white mb-2">Follow Us</h4>
+  <div class="flex justify-center md:justify-start gap-4 mt-2">
+    
+    <!-- LinkedIn -->
+    <a href="https://www.linkedin.com/in/aditya-bandewar-393231326/" target="_blank" class="text-gray-400 hover:text-brandPurple transition">
+      <i class="fab fa-linkedin fa-lg"></i>
+    </a>
+
+    <!-- LeetCode -->
+    <a href="https://leetcode.com/u/adityabandewar206/" target="_blank" class="text-gray-400 hover:text-brandYellow transition">
+      <i class="fa-brands fa-leanpub fa-lg"></i>
+    </a>
+
+    <!-- GitHub -->
+    <a href="https://github.com/adityaB-code100/" target="_blank" class="text-gray-400 hover:text-brandEmerald transition">
+      <i class="fab fa-github fa-lg"></i>
+    </a>
+
+    <!-- Email -->
+    <a href="mailto:adityabandewar21@gmail.com" class="text-gray-400 hover:text-brandAmber transition">
+      <i class="fas fa-envelope fa-lg"></i>
+    </a>
+
+  </div>
+</div>
+
 
     </div>
 

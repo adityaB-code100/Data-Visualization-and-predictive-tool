@@ -274,7 +274,8 @@ def visualize_dashboard():
     return render_template("visualize_dashboard.html")
 
 
-# Route to handle file upload for data analysis - accepts CSV, XLS, and XLSX files
+# Route to handle file upload for data analysis - accepts CSV, XLS, and XLSX files 
+#for prediction
 @app.route("/upload_file", methods=["POST"])
 def upload_file():
     try:
