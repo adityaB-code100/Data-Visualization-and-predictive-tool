@@ -644,6 +644,9 @@ def delete_chart(chart_id):
     flash("Chart deleted successfully!", "success")
     return redirect(url_for("profile"))
 
+@app.route("/health")
+def health():
+    return "OK", 200
 
 @app.after_request
 def add_header(response):
